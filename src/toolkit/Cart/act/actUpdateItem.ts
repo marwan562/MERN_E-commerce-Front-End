@@ -30,7 +30,7 @@ export const actUpdateItem = createAsyncThunk(
         throw new Error("Network response was not ok");
       }
       toast.success("Decrement Item Successfully");
-      console.log(productId);
+      (productId);
       return (await response.json()) as TCartItems[];
     } catch (err) {
       toast.error(`${err}`);

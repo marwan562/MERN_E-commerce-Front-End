@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store";
 import { actCreateUser, logOut } from "@/toolkit/auth/authSlice";
 import { Button } from "../ui/button";
+import { cleanCartItemsAction } from "@/toolkit/Cart/cartSlice";
 
 const LogInUser = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +20,7 @@ const LogInUser = () => {
           dispatch(actCreateUser(token));
         } else if (!isSignedIn && isAuthanticated) {
           dispatch(logOut());
+          dispatch(cleanCartItemsAction());
         }
       }
     };

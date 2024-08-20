@@ -11,7 +11,7 @@ const ProductList = ({
   title,
   price,
   cat_prefix,
-  id,
+  _id,
   stock,
 }: TProps) => {
   const data = {
@@ -20,7 +20,7 @@ const ProductList = ({
     title,
     price,
     cat_prefix,
-    id,
+    _id,
     stock,
   };
   return (
@@ -51,7 +51,7 @@ const ProductList = ({
       />
       <div className="flex items-center justify-between ">
         <Link
-          href={`/details/${id}`}
+          href={`/details/${_id}`}
           className="font-mono group-hover:underline cursor-pointer ml-3"
         >
           <h2 className="text-lg  ">{title?.toLocaleUpperCase()}</h2>

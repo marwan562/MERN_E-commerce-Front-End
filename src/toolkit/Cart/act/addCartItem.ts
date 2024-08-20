@@ -1,17 +1,16 @@
-import {  createAsyncThunk } from "@reduxjs/toolkit";
-
+import { TCartItems } from "@/interface";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 
 type TProps = {
-    token:string | null;
-    productId:number;
-    quantity?:number
-}
-
-
+  token: string | null;
+  productId: number;
+  quantity?: number;
+};
 
 export const actAddCartItem = createAsyncThunk(
   "cart/actAddCartItem",
-  async ({ token, productId }: TProps, { rejectWithValue }) => {
+  async ({ token, productId, quantity }: TProps, { rejectWithValue }) => {
     try {
       const response = await fetch(
         `${process.env.BASE_URL}/cartitems/addItem`,
@@ -30,10 +29,15 @@ export const actAddCartItem = createAsyncThunk(
         throw new Error("Failed to add item to cart");
       }
 
-      console.log(response.json)
+      if ((quantity ?? 0) > 1) {
+        toast.success("Incremented item in cart successfully");
+      } else {
+        toast.success("Added to cart successfully");
+      }
 
-      return await response.json();
+      return (await response.json()) as TCartItems[];
     } catch (err: any) {
+      toast.error(`${err}`);
       return rejectWithValue(err.message);
     }
   }

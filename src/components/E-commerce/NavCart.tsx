@@ -18,63 +18,76 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/store";
-import {
-  removeProductAction,
-  setCartAction,
-  decrementItemAction,
-} from "@/toolkit/Cart/cartSlice";
 import { actGetCartItems } from "@/toolkit/Cart/act/actGetCartItems";
+import { useAuth } from "@clerk/nextjs";
+import { actAddCartItem } from "@/toolkit/Cart/act/addCartItem";
+import { IProductsTypes } from "@/interface";
+import { actDeleteItem } from "@/toolkit/Cart/act/actDeleteItem";
+import { actUpdateItem } from "@/toolkit/Cart/act/actUpdateItem";
 
 const NavCart = () => {
   const dispatch = useAppDispatch();
-  // const [animate, setAnimate] = useState(false);
+  const [animate, setAnimate] = useState(false);
+  const { getToken } = useAuth();
   const { cartItems, status } = useAppSelector((state) => state.cart);
 
-  const totalQuantity = cartItems.reduce(
+  const totalQuantity = cartItems?.reduce(
     (total, item) => total + (item.quantity ?? 0),
     0
   );
 
   const totalPrice = cartItems.reduce((act, item) => {
-    const total = (item?.quantity ?? 0) * item.price;
+    const total = (item?.quantity ?? 0) * item.productId.price;
     return act + total;
   }, 0);
 
-  // const incrementItemHandle = (item: Item) => {
-  //   dispatch(setCartAction(item));
-  //   toast.success("Increment Item To Cart Successfully");
-  // };
-  // const removeItemHanle = (id: number) => {
-  //   dispatch(removeProductAction(id));
-  //   toast.success("Rmove Item From Cart Successfully");
-  // };
-  // const decrementItemHandle = (id: number) => {
-  //   dispatch(decrementItemAction(id));
-  //   toast.success("Decrement Item To Cart Successfully");
-  // };
-
-  // useEffect(() => {
-  //   if (totalQuantity) {
-  //     setAnimate(true);
-  //     const timer = setTimeout(() => setAnimate(false), 500);
-  //     return () => {
-  //       clearTimeout(timer);
-  //     };
-  //   }
-  // }, [totalQuantity]);
+  const incrementItemHandle = async (data: IProductsTypes) => {
+    const token = await getToken();
+    await dispatch(
+      actAddCartItem({
+        productId: data._id,
+        token,
+        quantity:data?.quantity
+      })
+    );
+    
+  };
+  const removeItemHanle = async (productId: number) => {
+    const token = await getToken();
+    await dispatch(actDeleteItem({ productId, token }));
+  };
+  const decrementItemHandle = async (productId: number) => {
+    const token = await getToken()
+    await dispatch(actUpdateItem({productId ,token}));
+    
+  };
 
   useEffect(() => {
-    dispatch(actGetCartItems());
-  }, [dispatch]);
+    if (totalQuantity) {
+      setAnimate(true);
+      const timer = setTimeout(() => setAnimate(false), 500);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [totalQuantity]);
+
+  useEffect(() => {
+    const getAllItemsInCart = async () => {
+      const token = await getToken();
+      dispatch(actGetCartItems(token));
+    };
+    getAllItemsInCart();
+  }, [dispatch, getToken]);
 
   return (
     <Drawer direction="right">
       <DrawerTrigger asChild>
         <Button className={" font-bold text-[15px]"} variant="link">
           CART (
-          {/* <span className={animate ? " text-green-600  animate-ping " : ""}> */}
+          <span className={animate ? " text-green-600  animate-ping " : ""}>
           {totalQuantity}
-          {/* </span> */})
+          </span>)
         </Button>
       </DrawerTrigger>
       <DrawerContent className="h-screen top-0 right-0 left-auto mt-0 w-[500px] rounded-none">
@@ -96,7 +109,7 @@ const NavCart = () => {
                     >
                       <Button
                         size={"sm"}
-                        // onClick={() => removeItemHanle(item._id)}
+                        onClick={() => removeItemHanle(item.productId._id)}
                         variant="destructive"
                         className="absolute end-2 top-2  transition hover:scale-110"
                       >
@@ -117,19 +130,22 @@ const NavCart = () => {
                       </Button>
                       <Image
                         className={" bg-gray-50  rounded-md"}
-                        src={item.img}
+                        src={item?.productId?.img}
                         alt={`img-${i}`}
                         width={100}
                         height={100}
                       />
                       <div className=" ">
                         <h2 className="font-mono mb-2  text-lg group-hover:underline ">
-                          <Link href={`/details-product/${item._id}`}>
-                            {item.title}
+                          <Link href={`/details-product/${item.productId._id}`}>
+                            {item.productId.title}
                           </Link>
                         </h2>
                         <p>
-                          Price: <Badge variant="outline">$ {item.price}</Badge>
+                          Price:{" "}
+                          <Badge variant="outline">
+                            $ {item.productId.price}
+                          </Badge>
                         </p>
                         <p>
                           Quantity:{" "}
@@ -137,13 +153,13 @@ const NavCart = () => {
                         </p>
                         <div className="space-x-2  space-y-1">
                           <Button
-                            // onClick={() => incrementItemHandle(item)}
+                            onClick={() => incrementItemHandle(item.productId)}
                             size="sm"
                           >
                             +
                           </Button>
                           <Button
-                            // onClick={() => decrementItemHandle(item.id)}
+                            onClick={() => decrementItemHandle(item.productId._id)}
                             variant="outline"
                             size="sm"
                           >

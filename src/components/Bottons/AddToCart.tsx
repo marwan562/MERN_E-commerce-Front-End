@@ -1,7 +1,6 @@
 "use client";
 import { IProductsTypes } from "@/interface";
 import { useAppDispatch } from "@/lib/store";
-import { setCartAction } from "@/toolkit/Cart/cartSlice";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { actAddCartItem } from "@/toolkit/Cart/act/addCartItem";
@@ -12,7 +11,7 @@ const AddToCart = ({ data }: { data: IProductsTypes }) => {
   const { getToken } = useAuth();
 
   const addToCartHandler = async (data: IProductsTypes) => {
-    if (data.role === "sale") {
+    if (data.role === "Sale" || data.stock === 0) {
       return toast.error("Product Saled.");
     }
     const token = await getToken();
@@ -20,8 +19,9 @@ const AddToCart = ({ data }: { data: IProductsTypes }) => {
       actAddCartItem({
         productId: data._id,
         token,
+        quantity:data.quantity
       })
-    ).then(() => toast.success("Added To Cart Successfully"));
+    );
   };
 
   return (

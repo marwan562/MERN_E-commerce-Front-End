@@ -5,7 +5,7 @@ export interface IProductsTypes {
   cat_prefix: string;
   img: string;
   stock: number;
-  role: string;
+  role: "Sale" | "New" | "";
   quantity?: number;
 }
 export interface ICategoriesTypes {
@@ -30,6 +30,16 @@ export interface User {
   phoneMobile?: number;
   imageUrl: string;
   role: "admin" | "user" | "superAdmin";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TCartItems {
+  _id: string;
+  userId: string;
+  sessionId: string;
+  productId: IProductsTypes;
+  quantity: number;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -55,7 +55,6 @@ const NavSearch = () => {
   const [filteredProducts, setFilteredProducts] = useState<IProductsTypes[]>(
     []
   );
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const { washlist } = useAppSelector((state) => state.washlist);
 

@@ -4,6 +4,7 @@ import NavigationMenu from "@/components/NavigationMenu";
 import { Button } from "@/components/ui/button";
 import LogInUser from "../Bottons/LogInUser";
 import WashlistHeader from "./WashlistHeader";
+import Link from "next/link";
 
 const Navbar = () => {
   return (
@@ -19,7 +20,7 @@ const Navbar = () => {
           />
           <ul className="hidden md:flex font-semibold items-center gap-5">
             <Button className={"  font-bold text-[15px]"} variant="link">
-              Home
+              <Link href={"/"}> Home</Link>
             </Button>
           </ul>
           <NavigationMenu />

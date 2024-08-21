@@ -1,14 +1,14 @@
-import { TCartItems, TWashlist } from "@/interface";
+import { TWashlist } from "@/interface";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
 type TProps = {
   token: string | null;
-  productId: number;
+  productId: number; // Update to string if API expects productId as a string
 };
 
 export const actAddWashlist = createAsyncThunk(
-  "cart/actAddWashlist",
+  "washlist/actAddWashlist",
   async ({ token, productId }: TProps, { rejectWithValue }) => {
     try {
       const response = await fetch(`${process.env.BASE_URL}/washlist/addItem`, {
@@ -16,19 +16,17 @@ export const actAddWashlist = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
-          mode: "cors",
         },
         body: JSON.stringify({ productId }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to add item to cart");
+        throw new Error("Failed to add item to washlist");
       }
-      toast.success("Added To You'r Washlist.");
 
       return (await response.json()) as TWashlist[];
     } catch (err: any) {
-      toast.error(`${err}`);
+      toast.error(`Failed to add item to washlist: ${err.message}`);
       return rejectWithValue(err.message);
     }
   }

@@ -42,12 +42,14 @@ const Products = () => {
     };
 
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, getToken]);
 
   const productsWithWashlist = products.map((product) => ({
     ...product,
-    inWashlist: washlist.some((item) => item.productId === product._id),
+    inWashlist: washlist.some((item) => item.productId._id === product._id),
   }));
+
+  console.log(productsWithWashlist);
 
   return (
     <main className="mb-36 container mx-auto">

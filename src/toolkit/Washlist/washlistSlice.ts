@@ -26,32 +26,32 @@ const washlistSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    // add to washlist
+    // Add to washlist
     builder
-    .addCase(actAddWashlist.pending, (state) => {
-      state.status = "pending";
-    })
-    .addCase(actAddWashlist.fulfilled, (state, action) => {
-      state.status = "success";
-      state.washlist = action.payload;
-    })
-    .addCase(actAddWashlist.rejected, (state, action) => {
-      state.status = "failed";
-      state.error = action.payload as string;
-    });
-    //get all washlist
+      .addCase(actAddWashlist.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(actAddWashlist.fulfilled, (state, action) => {
+        state.status = "success";
+        state.washlist = action.payload;
+      })
+      .addCase(actAddWashlist.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload as string;
+      });
+    // Get all washlist
     builder
-    .addCase(actGetWashlist.pending, (state) => {
-      state.status = "pending";
-    })
-    .addCase(actGetWashlist.fulfilled, (state, action) => {
-      state.status = "success";
-      state.washlist = action.payload
-    })
-    .addCase(actGetWashlist.rejected, (state, action) => {
-      state.status = "failed";
-      state.error = action.payload as string;
-    });
+      .addCase(actGetWashlist.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(actGetWashlist.fulfilled, (state, action) => {
+        state.status = "success";
+        state.washlist = action.payload;
+      })
+      .addCase(actGetWashlist.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload as string;
+      });
   },
 });
 

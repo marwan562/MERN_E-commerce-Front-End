@@ -32,7 +32,7 @@ const Navbar = () => {
 
           <NavCart />
 
-         <WashlistHeader/>
+          <WashlistHeader />
           <LogInUser />
         </div>
       </div>

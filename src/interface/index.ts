@@ -48,5 +48,5 @@ export interface TCartItems {
 export interface TWashlist {
   _id: number;
   userId: number;
-  productId: number;
+  productId: IProductsTypes;
 }

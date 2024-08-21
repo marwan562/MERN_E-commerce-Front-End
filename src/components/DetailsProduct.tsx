@@ -22,23 +22,26 @@ const DetailsProduct = ({
   const { getToken } = useAuth();
   const { washlist } = useAppSelector((state) => state.washlist);
   const { cartItems } = useAppSelector((state) => state.cart);
-  
+
   const [loading, setLoading] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  const inWashlist = washlist.some((item) => item.productId === _id);
-  const quantity = cartItems.find((item) => item.productId._id === _id)?.quantity ?? 0;
+  const inWashlist = washlist.some((item) => item.productId._id === _id);
+  const quantity =
+    cartItems.find((item) => item.productId._id === _id)?.quantity ?? 0;
 
   const handleAddToCart = async () => {
     if (role === "Sale" || stock === 0) {
       return toast.error("Product sold out.");
     }
-    
+
     setIsAddingToCart(true);
     try {
       const token = await getToken();
       if (token) {
-        await dispatch(actAddCartItem({ productId: _id, token, quantity })).unwrap();
+        await dispatch(
+          actAddCartItem({ productId: _id, token, quantity })
+        ).unwrap();
       } else {
         toast.error("Please log in.");
       }
@@ -92,7 +95,9 @@ const DetailsProduct = ({
         <span className="ml-2 text-gray-600">4.5 (120 reviews)</span>
       </div>
       <p className="text-gray-700 mb-6 font-mono">
-        Elevate your wardrobe with this sleek leather jacket. Designed for both comfort and style, it features a timeless silhouette and high-quality leather.
+        Elevate your wardrobe with this sleek leather jacket. Designed for both
+        comfort and style, it features a timeless silhouette and high-quality
+        leather.
       </p>
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Color:</h3>
@@ -103,7 +108,10 @@ const DetailsProduct = ({
         </div>
       </div>
       <div className="mb-6">
-        <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="quantity"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Quantity: <Badge>{quantity}</Badge>
         </label>
       </div>

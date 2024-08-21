@@ -1,35 +1,12 @@
 "use client";
 
-import { useAppDispatch } from "@/lib/store";
-import { actAddWashlist } from "@/toolkit/Washlist/act/addWashlist";
-import { useAuth } from "@clerk/nextjs";
-import { useState, useCallback } from "react";
-
 type TProps = {
-  productId: number;
   inWashlist: boolean;
+  handleAddToWashlist: () => void;
+  loading: boolean;
 };
 
-const Washlist = ({ productId, inWashlist }: TProps) => {
-  const dispatch = useAppDispatch();
-  const { getToken } = useAuth();
-  const [loading, setLoading] = useState(false);
-
-  // Handler function to toggle wishlist status
-  const handleAddToWashlist = useCallback(async () => {
-    setLoading(true); // Start loading state
-    try {
-      const token = await getToken();
-      if (token) {
-        await dispatch(actAddWashlist({ productId, token }));
-      }
-    } catch (error) {
-      console.error("Failed to update wishlist:", error);
-    } finally {
-      setLoading(false); // End loading state
-    }
-  }, [dispatch, getToken, productId]);
-
+const Washlist = ({ inWashlist, handleAddToWashlist, loading }: TProps) => {
   return (
     <div
       onClick={handleAddToWashlist}
@@ -39,7 +16,7 @@ const Washlist = ({ productId, inWashlist }: TProps) => {
     >
       {loading ? (
         <svg
-          className=" animate-spin"
+          className="animate-spin"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"

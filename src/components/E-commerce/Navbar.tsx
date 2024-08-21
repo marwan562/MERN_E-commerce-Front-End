@@ -3,6 +3,7 @@ import NavCart from "./NavCart";
 import NavigationMenu from "@/components/NavigationMenu";
 import { Button } from "@/components/ui/button";
 import LogInUser from "../Bottons/LogInUser";
+import WashlistHeader from "./WashlistHeader";
 
 const Navbar = () => {
   return (
@@ -31,15 +32,7 @@ const Navbar = () => {
 
           <NavCart />
 
-          <div className="flex items-center  space-x-1 hover:underline tracking-wide font-bold text-[15px] cursor-pointer">
-            <Image
-              src="/svg/washlist.svg"
-              alt="washlist"
-              width={13}
-              height={13}
-            />
-            <span>0</span>
-          </div>
+         <WashlistHeader/>
           <LogInUser />
         </div>
       </div>

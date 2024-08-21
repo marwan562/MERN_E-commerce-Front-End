@@ -7,6 +7,7 @@ export interface IProductsTypes {
   stock: number;
   role: "Sale" | "New" | "";
   quantity?: number;
+  inWashlist?: boolean;
 }
 export interface ICategoriesTypes {
   _id: number;
@@ -23,7 +24,7 @@ export interface IBlogsTypes {
 
 export interface User {
   authId: string;
-  _id: string;
+  _id: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -42,4 +43,10 @@ export interface TCartItems {
   quantity: number;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface TWashlist {
+  _id: number;
+  userId: number;
+  productId: number;
 }

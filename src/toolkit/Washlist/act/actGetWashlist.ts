@@ -1,6 +1,6 @@
 import { TWashlist } from "@/interface";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 export const actGetWashlist = createAsyncThunk<
   TWashlist[],

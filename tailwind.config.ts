@@ -18,6 +18,9 @@ const config = {
       },
     },
     extend: {
+      spacing: {
+        'screen': '100vw', // Full viewport width
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

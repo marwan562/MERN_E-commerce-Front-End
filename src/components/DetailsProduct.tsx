@@ -7,8 +7,8 @@ import { useAppDispatch, useAppSelector } from "@/lib/store";
 import { useCallback, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { actAddWashlist } from "@/toolkit/Washlist/act/addWashlist";
-import toast from "react-hot-toast";
 import { actAddCartItem } from "@/toolkit/Cart/act/addCartItem";
+import { toast } from "sonner";
 
 const DetailsProduct = ({
   _id,

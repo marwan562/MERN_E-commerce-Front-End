@@ -1,6 +1,6 @@
 import { TCartItems } from "@/interface";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 type TProps = {
   productId: number;

@@ -9,7 +9,7 @@ import { useAppDispatch } from "@/lib/store";
 import { useAuth } from "@clerk/nextjs";
 import { actAddWashlist } from "@/toolkit/Washlist/act/addWashlist";
 import { useCallback, useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 interface TProps extends IProductsTypes {
   inWashlist: boolean;

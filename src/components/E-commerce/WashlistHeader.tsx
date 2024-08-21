@@ -16,6 +16,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import ProductList from "../ProductsList";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 const WashlistHeader = () => {
   const dispatch = useAppDispatch();
@@ -64,21 +65,24 @@ const WashlistHeader = () => {
           <DrawerDescription>Your favorite products.</DrawerDescription>
         </DrawerHeader>
         <DrawerFooter>
-          <div className="flex overflow-x-auto space-x-4 py-2">
-            {washlist.map((item) => (
-              <ProductList
-                key={item.productId._id}
-                role={item.productId.role}
-                img={item.productId.img}
-                title={item.productId.title}
-                price={item.productId.price}
-                _id={item.productId._id}
-                stock={item.productId.stock}
-                category={item.productId.category}
-                inWashlist={true} // Assuming these items are in the washlist
-              />
-            ))}
-          </div>
+          <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+            <div className="flex w-max space-x-4 p-4">
+              {washlist.map((item) => (
+                <ProductList
+                  key={item.productId._id}
+                  role={item.productId.role}
+                  img={item.productId.img}
+                  title={item.productId.title}
+                  price={item.productId.price}
+                  _id={item.productId._id}
+                  stock={item.productId.stock}
+                  category={item.productId.category}
+                  inWashlist={true}
+                />
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
           <DrawerClose>
             <Button className="w-full" variant={"default"}>
               Cancel

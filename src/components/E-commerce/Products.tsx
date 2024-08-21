@@ -49,7 +49,6 @@ const Products = () => {
     inWashlist: washlist.some((item) => item.productId._id === product._id),
   }));
 
-  console.log(productsWithWashlist);
 
   return (
     <main className="mb-36 container mx-auto">

@@ -3,16 +3,16 @@ import { Inter } from "next/font/google";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/E-commerce/Navbar";
 import StoreProvider from "@/providers/StoreProvider";
-import { Toaster } from "react-hot-toast";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "E-commerce UI",
   description: "Black Ecommerce",
-  icons:"/svg/corsen-main-logo-svg.svg"
+  icons: "/svg/corsen-main-logo-svg.svg",
 };
 
 export default function RootLayout({
@@ -31,7 +31,7 @@ export default function RootLayout({
               <div className="flex-1">{children}</div>
               <Footer />
             </div>
-            <Toaster />
+            <Toaster position="top-center" />
           </StoreProvider>
         </body>
       </html>

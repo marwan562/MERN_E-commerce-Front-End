@@ -1,9 +1,10 @@
 import React from "react";
+import NextBreadcrumb from "@/components/NextBreadcrumb"; // Adjust the path as needed
 import DetailsProduct from "@/components/DetailsProduct";
 import LeftBaner from "@/components/LeftBaner";
 import { IProductsTypes } from "@/interface";
 
-const getProductById = async (id: string):Promise<IProductsTypes> => {
+const getProductById = async (id: string): Promise<IProductsTypes> => {
   const res = await fetch(`${process.env.BASE_URL}/product/details/${id}`, {
     method: "GET",
   });
@@ -15,19 +16,28 @@ const getProductById = async (id: string):Promise<IProductsTypes> => {
   return await res.json();
 };
 
-const DetailsProductPage = async ({ params }: { params: { productId: string } }) => {
-  
-  const productDetails = await getProductById(params.productId)
-
-  
+const DetailsProductPage = async ({
+  params,
+}: {
+  params: { productId: string };
+}) => {
+  const productDetails = await getProductById(params.productId);
 
   return (
     <div className="bg-gray-100 mt-12">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-wrap -mx-4">
+        <NextBreadcrumb
+          homeElement="Home"
+          separator={<span className="mx-2">/</span>}
+          containerClasses="flex space-x-2"
+          listClasses="text-blue-500"
+          activeClasses="font-bold"
+          capitalizeLinks
+          productTitle={productDetails.title} // Pass the product title
+        />
+        <div className="flex flex-wrap -mx-4 mt-8">
           <LeftBaner image={productDetails.img} />
-
-          <DetailsProduct {...productDetails}/>
+          <DetailsProduct {...productDetails} />
         </div>
       </div>
     </div>

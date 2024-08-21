@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import LogInUser from "../Bottons/LogInUser";
 import WashlistHeader from "./WashlistHeader";
 import Link from "next/link";
+import NavSearch from "../NavSearch";
 
 const Navbar = () => {
   return (
@@ -26,10 +27,7 @@ const Navbar = () => {
           <NavigationMenu />
         </div>
         <div className="flex items-center justify-center gap-5">
-          <div className=" items-center hidden md:flex space-x-2 hover:underline cursor-pointer tracking-wide font-bold text-[15px]">
-            <span title="search">SEARCH</span> {/* icon search */}
-            <Image src="/svg/search.svg" alt="cart" width={14} height={15} />
-          </div>
+        <NavSearch />
 
           <NavCart />
 

@@ -1,10 +1,10 @@
 "use client";
 import { IProductsTypes } from "@/interface";
 import { useAppDispatch } from "@/lib/store";
-import toast from "react-hot-toast";
 import Image from "next/image";
 import { actAddCartItem } from "@/toolkit/Cart/act/addCartItem";
 import { useAuth } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 const AddToCart = ({ data }: { data: IProductsTypes }) => {
   const dispatch = useAppDispatch();

@@ -1,5 +1,6 @@
 import { ICategoriesTypes } from "@/interface";
 import Image from "next/image";
+import Link from "next/link";
 
 type TProps = {
   data: ICategoriesTypes[];
@@ -8,7 +9,7 @@ type TProps = {
 const RenderCategories = ({ data }: TProps) => {
   return data.map((el) => {
     return (
-      <div key={el.id} className="relative mb-5 md:mb-0">
+      <div key={el._id} className="relative mb-5 md:mb-0">
         <Image
           className="w-full border-y-2 border-black h-full"
           src={el.img}
@@ -21,9 +22,11 @@ const RenderCategories = ({ data }: TProps) => {
           <h2 className=" text-5xl font-mono mb-7">
             {el.title.toLocaleUpperCase()}
           </h2>
-          <button className="border border-black text-balance hover:bg-slate-400/35 duration-200 ease-in font-mono px-8 py-2">
+         <Link href={`/categories/${el.title}`}  >
+         <button className="border border-black text-balance hover:bg-slate-400/35 duration-200 ease-in font-mono px-8 py-2">
             SHOP COLLECTION
           </button>
+          </Link>
         </div>
       </div>
     );

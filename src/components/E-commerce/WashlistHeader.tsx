@@ -13,13 +13,14 @@ import {
 import { actGetWashlist } from "@/toolkit/Washlist/act/actGetWashlist";
 import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import ProductList from "../ProductsList";
 
 const WashlistHeader = () => {
   const dispatch = useAppDispatch();
   const { getToken } = useAuth();
+  const [animate, setAnimate] = useState(false);
   const { washlist } = useAppSelector((state) => state.washlist);
 
   const totalWashlist = washlist.length;
@@ -32,6 +33,16 @@ const WashlistHeader = () => {
     getAllWashlist();
   }, [dispatch, getToken]);
 
+  useEffect(() => {
+    if (totalWashlist) {
+      setAnimate(true);
+      const timer = setTimeout(() => setAnimate(false), 500);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [totalWashlist]);
+
   return (
     <Drawer>
       <DrawerTrigger>
@@ -42,7 +53,9 @@ const WashlistHeader = () => {
             width={13}
             height={13}
           />
-          <span>({totalWashlist})</span>
+          <span className={animate ? " text-green-600  animate-ping " : ""}>
+            {totalWashlist}
+          </span>
         </div>
       </DrawerTrigger>
       <DrawerContent>
@@ -67,7 +80,7 @@ const WashlistHeader = () => {
             ))}
           </div>
           <DrawerClose>
-            <Button className="w-full" variant="outline">
+            <Button className="w-full" variant={"default"}>
               Cancel
             </Button>
           </DrawerClose>

@@ -12,6 +12,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "E-commerce UI",
   description: "Black Ecommerce",
+  icons:"/svg/corsen-main-logo-svg.svg"
 };
 
 export default function RootLayout({

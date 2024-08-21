@@ -48,7 +48,7 @@ const ProductList = ({
       />
       <div className="flex items-center justify-between p-2">
         <Link
-          href={`/details/${_id}`}
+          href={`/details-product/${_id}`}
           className="font-mono group-hover:underline cursor-pointer ml-3"
         >
           <h2 className="text-lg">{title.toUpperCase()}</h2>

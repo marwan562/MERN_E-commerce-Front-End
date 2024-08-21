@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/lib/store";
+import { useAppDispatch } from "@/lib/store";
 import { actAddWashlist } from "@/toolkit/Washlist/act/addWashlist";
 import { useAuth } from "@clerk/nextjs";
 import { useState, useCallback } from "react";
@@ -13,7 +13,6 @@ type TProps = {
 const Washlist = ({ productId, inWashlist }: TProps) => {
   const dispatch = useAppDispatch();
   const { getToken } = useAuth();
-  const status = useAppSelector((state) => state.washlist.status); // Assume `status` is part of your state
   const [loading, setLoading] = useState(false);
 
   // Handler function to toggle wishlist status

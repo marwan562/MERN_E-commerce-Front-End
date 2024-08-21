@@ -6,6 +6,7 @@ import ProductsSkeletons from "../skeletons/ProductsSkeletons";
 import { useEffect, useState } from "react";
 import { actGetWashlist } from "@/toolkit/Washlist/act/actGetWashlist";
 import { useAppDispatch, useAppSelector } from "@/lib/store";
+import { useAuth } from "@clerk/nextjs";
 
 const ProductList = dynamic(() => import("../ProductsList"), {
   ssr: false, // Ensures this component is only rendered on the client side
@@ -24,15 +25,17 @@ async function getProducts() {
 
 const Products = () => {
   const dispatch = useAppDispatch();
+  const { getToken } = useAuth();
   const [products, setProducts] = useState<IProductsTypes[]>([]);
-  const {washlist} = useAppSelector((state) => state.washlist);
+  const { washlist } = useAppSelector((state) => state.washlist);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getProducts();
+        const token = await getToken();
         setProducts(data as IProductsTypes[]);
-        dispatch(actGetWashlist());
+        await dispatch(actGetWashlist(token));
       } catch (error) {
         console.error("Error fetching products:", error);
       }

@@ -2,7 +2,7 @@ export interface IProductsTypes {
   _id: number;
   title: string;
   price: number;
-  cat_prefix: string;
+  category: ICategoriesTypes;
   img: string;
   stock: number;
   role: "Sale" | "New" | "";

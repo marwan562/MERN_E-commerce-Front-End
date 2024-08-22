@@ -1,19 +1,16 @@
 import { Icons } from "@/components/icons";
-import { Button } from "./ui/button";
 import {
   Card,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
-import PaymentTab from "./PaymentTab";
+import PaymentTab from "@/components/PaymentTab";
 import PaymentComingSoon from "./PaymentComingSoon";
 
-export function CardsPaymentMethod() {
-  
+function CardsPaymentMethod() {
   return (
     <Card>
       <CardHeader>
@@ -70,8 +67,8 @@ export function CardsPaymentMethod() {
           description="Apple Pay allows users to make payments with just a tap or a glance, making transactions quick and easy without needing to carry physical cards."
         />
       </Tabs>
-
-     
     </Card>
   );
 }
+
+export default CardsPaymentMethod;

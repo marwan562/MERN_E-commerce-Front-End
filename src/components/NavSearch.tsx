@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -8,14 +9,6 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import {
-  CalendarIcon,
-  EnvelopeClosedIcon,
-  FaceIcon,
-  GearIcon,
-  PersonIcon,
-  RocketIcon,
-} from "@radix-ui/react-icons";
 import {
   Command,
   CommandEmpty,
@@ -29,12 +22,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ICategoriesTypes, IProductsTypes } from "@/interface";
 import { useAppSelector } from "@/lib/store";
+import { Button } from "./ui/button";
 
 async function fetchProducts(): Promise<IProductsTypes[]> {
   const res = await fetch(`${process.env.BASE_URL}/product/getAll`);
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
-  }
+  if (!res.ok) throw new Error("Failed to fetch products");
   return res.json();
 }
 
@@ -42,9 +34,7 @@ async function getCategories(): Promise<ICategoriesTypes[]> {
   const res = await fetch(`${process.env.BASE_URL}/category/getAll`, {
     cache: "force-cache",
   });
-  if (!res.ok) {
-    throw new Error("Failed to fetch categories");
-  }
+  if (!res.ok) throw new Error("Failed to fetch categories");
   return res.json();
 }
 
@@ -52,16 +42,11 @@ const NavSearch = () => {
   const [products, setProducts] = useState<IProductsTypes[]>([]);
   const [categories, setCategories] = useState<ICategoriesTypes[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewMoreProducts, setViewMoreProducts] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<IProductsTypes[]>(
     []
   );
-
   const { washlist } = useAppSelector((state) => state.washlist);
-
-  const productsWithWashlist = products.map((product) => ({
-    ...product,
-    inWashlist: washlist.some((item) => item.productId._id === product._id),
-  }));
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -88,16 +73,22 @@ const NavSearch = () => {
   }, []);
 
   useEffect(() => {
-    if (searchTerm) {
-      setFilteredProducts(
-        products.filter((product) =>
-          product.title.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredProducts(products);
-    }
+    const searchRegExp = new RegExp(searchTerm, "i");
+    setFilteredProducts(
+      searchTerm
+        ? products.filter((product) => searchRegExp.test(product.title))
+        : products
+    );
   }, [searchTerm, products]);
+
+  const productsWithWashlist = products.map((product) => ({
+    ...product,
+    inWashlist: washlist.some((item) => item.productId._id === product._id),
+  }));
+
+  const showProducts = viewMoreProducts
+    ? productsWithWashlist
+    : productsWithWashlist.slice(0, 4);
 
   return (
     <Dialog modal={false}>
@@ -110,6 +101,7 @@ const NavSearch = () => {
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Search About Products</DialogTitle>
+          <DialogClose className="absolute top-2 right-2"></DialogClose>
         </DialogHeader>
         <Command className="rounded-lg border shadow-md md:min-w-[300px]">
           <CommandInput
@@ -130,7 +122,7 @@ const NavSearch = () => {
                       height={24}
                       className="mr-2 h-6 w-6 rounded-md object-cover"
                     />
-                    <span className=" font-mono">{category.title}</span>
+                    <span className="font-mono">{category.title}</span>
                   </CommandItem>
                 </Link>
               ))}
@@ -138,10 +130,9 @@ const NavSearch = () => {
             <CommandSeparator />
             <CommandGroup heading="Products">
               {filteredProducts.length > 0 ? (
-                productsWithWashlist.map((product) => (
+                showProducts.map((product) => (
                   <Link
                     key={product._id}
-                    className="cursor-pointer"
                     href={`/details-product/${product._id}`}
                   >
                     <CommandItem className="flex flex-row justify-between items-center">
@@ -157,12 +148,12 @@ const NavSearch = () => {
                       </div>
                       {product.inWashlist && (
                         <svg
-                          className={`text-red-600 transition-transform duration-300 fill-current`}
+                          className="text-red-600 transition-transform duration-300 fill-current"
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
                           height="16"
                           viewBox="0 0 24 24"
-                          fill={"red"}
+                          fill="red"
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
@@ -176,6 +167,15 @@ const NavSearch = () => {
                 ))
               ) : (
                 <CommandEmpty>No products found.</CommandEmpty>
+              )}
+              {productsWithWashlist.length > 4 && (
+                <Button
+                  onClick={() => setViewMoreProducts(!viewMoreProducts)}
+                  className="mx-auto mt-4"
+                  variant="link"
+                >
+                  Show {viewMoreProducts ? "Less" : "More"}
+                </Button>
               )}
             </CommandGroup>
           </CommandList>

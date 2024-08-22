@@ -46,19 +46,17 @@ const NavCart = () => {
       actAddCartItem({
         productId: data._id,
         token,
-        quantity:data?.quantity
+        quantity: data?.quantity,
       })
     );
-    
   };
   const removeItemHanle = async (productId: number) => {
     const token = await getToken();
     await dispatch(actDeleteItem({ productId, token }));
   };
   const decrementItemHandle = async (productId: number) => {
-    const token = await getToken()
-    await dispatch(actUpdateItem({productId ,token}));
-    
+    const token = await getToken();
+    await dispatch(actUpdateItem({ productId, token }));
   };
 
   useEffect(() => {
@@ -85,8 +83,9 @@ const NavCart = () => {
         <Button className={" font-bold text-[15px]"} variant="link">
           CART (
           <span className={animate ? " text-green-600  animate-ping " : ""}>
-          {totalQuantity}
-          </span>)
+            {totalQuantity}
+          </span>
+          )
         </Button>
       </DrawerTrigger>
       <DrawerContent className="h-screen top-0 right-0 left-auto mt-0 w-[500px] rounded-none">
@@ -158,7 +157,9 @@ const NavCart = () => {
                             +
                           </Button>
                           <Button
-                            onClick={() => decrementItemHandle(item.productId._id)}
+                            onClick={() =>
+                              decrementItemHandle(item.productId._id)
+                            }
                             variant="outline"
                             size="sm"
                           >
@@ -173,9 +174,11 @@ const NavCart = () => {
                 <div>You don{"'"}t have any product</div>
               )}
               {cartItems.length > 0 ? (
-                <Button className="w-full">
-                  Checkout ${totalPrice.toFixed(2)}
-                </Button>
+                <Link href={"/checkout-order"}>
+                  <Button className="w-full">
+                    Order Now ${totalPrice.toFixed(2)}
+                  </Button>
+                </Link>
               ) : null}
             </div>
           </div>

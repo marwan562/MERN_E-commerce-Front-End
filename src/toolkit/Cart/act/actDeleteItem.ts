@@ -7,9 +7,9 @@ type TProps = {
   token: string | null;
 };
 
-export const actDeleteItem = createAsyncThunk(
+export const actDeleteItem = createAsyncThunk<TCartItems[], TProps>(
   "cart/actDeleteItem",
-  async ({ productId, token }: TProps, thunkApi) => {
+  async ({ productId, token }, thunkApi) => {
     const { rejectWithValue } = thunkApi;
 
     try {

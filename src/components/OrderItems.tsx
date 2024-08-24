@@ -61,6 +61,7 @@ const OrderItems = ({ _id, img, title, price, quantity }: IProductsTypes) => {
           "X"
         )}
       </Button>
+      
     </div>
   );
 };

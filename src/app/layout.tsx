@@ -5,7 +5,9 @@ import Navbar from "@/components/E-commerce/Navbar";
 import StoreProvider from "@/providers/StoreProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/toaster";
+import NextTopLoader from "nextjs-toploader";
+import InternetConnecationProvider from "@/providers/InternetConnectionProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,12 +28,15 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <StoreProvider>
-            <div className="flex flex-col">
-              <Navbar />
-              <div className="flex-1">{children}</div>
-              <Footer />
-            </div>
-            <Toaster position="top-center" />
+            <InternetConnecationProvider>
+              <NextTopLoader />
+              <div className="flex flex-col">
+                <Navbar />
+                <div className="flex-1">{children}</div>
+                <Footer />
+              </div>
+              <Toaster />
+            </InternetConnecationProvider>
           </StoreProvider>
         </body>
       </html>

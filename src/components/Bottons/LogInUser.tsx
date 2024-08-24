@@ -12,6 +12,7 @@ const LogInUser = () => {
   const dispatch = useAppDispatch();
   const { isSignedIn, isLoaded, getToken } = useAuth();
   const { status, isAuthanticated } = useAppSelector((state) => state.auth);
+  console.log(isSignedIn , isAuthanticated)
 
   useEffect(() => {
     const handleAuthChange = async () => {

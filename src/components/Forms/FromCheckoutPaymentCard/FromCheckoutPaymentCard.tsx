@@ -1,7 +1,4 @@
-"use client";
-
-import { z } from "zod";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -20,39 +17,38 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
-const checkoutSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  city: z.string().min(1, "City is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  address: z.string().min(5, "Address is required"),
-  country: z.string().min(1, "Country is required"),
-  number: z.string().length(16, "Card number must be 16 digits"),
-  month: z.string().min(1, "Month is required"),
-  year: z.string().min(1, "Year is required"),
-  cvc: z.string().length(3, "CVC must be 3 digits"),
-});
-
-type TFormPaymentCard = z.infer<typeof checkoutSchema>;
+import { User } from "@/interface";
+import {
+  checkoutSchema,
+  TFormPaymentCard,
+} from "../validations/checkoutSchemaCardPayment";
 
 type TProps = {
   cartLength: number;
+  defaultValues?: TFormPaymentCard;
+  user?: User | null;
+  onSubmit: (val: TFormPaymentCard) => void;
 };
 
-export default function FromCheckoutPaymentCard({ cartLength }: TProps) {
+export default function FromCheckoutPaymentCard({
+  cartLength,
+  user,
+  defaultValues,
+  onSubmit,
+}: TProps) {
   const form = useForm<TFormPaymentCard>({
     resolver: zodResolver(checkoutSchema),
+    defaultValues,
   });
 
   const [showCardDetails, setShowCardDetails] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const { handleSubmit, formState, reset } = form;
+  const { handleSubmit, formState } = form;
   const { errors } = formState;
 
-  const onSubmit = (data: TFormPaymentCard) => {
-    console.log("Form Data:", data);
+  const onSubmitForm = (data: TFormPaymentCard) => {
+    onSubmit(data);
   };
 
   const handleContinue = () => {
@@ -64,11 +60,10 @@ export default function FromCheckoutPaymentCard({ cartLength }: TProps) {
   };
 
   const handleDialogOpen = () => {
-    const isValid = Object.keys(errors).length === 0;
-    if (isValid) {
+    if (Object.keys(errors).length === 0) {
       setIsDialogOpen(true);
     } else {
-      console.log("Form has errors, cannot open dialog");
+      setIsDialogOpen(false);
     }
   };
 
@@ -77,55 +72,63 @@ export default function FromCheckoutPaymentCard({ cartLength }: TProps) {
   };
 
   const handleConfirm = () => {
-    handleSubmit(onSubmit)();
-    setIsDialogOpen(false);
-    reset();
+    handleSubmit(onSubmitForm)();
+    setIsDialogOpen(false); 
   };
+
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        name: user.firstName,
+        email: user.email,
+      });
+    }
+  }, [form, user]);
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
         <FormDetailsUser />
-
-        {!showCardDetails && (
-          <Button type="button" onClick={handleContinue}>
-            Continue
-          </Button>
-        )}
 
         {showCardDetails && <FormDetailsPayment />}
 
-        {showCardDetails && cartLength && (
-          <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <AlertDialogTrigger asChild>
-              <Button type="button" onClick={handleDialogOpen}>
-                Payment Order
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel onClick={handleDialogClose}>
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction onClick={handleConfirm}>
-                  <Button type="button">Continue</Button>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
-
-        {!showCardDetails && !cartLength && (
-          <Button type="button">
-            <Link href="/categories">Cart Empty, Go To Shopping</Link>
-          </Button>
+        {showCardDetails ? (
+          cartLength > 0 ? (
+            <>
+              {/* Trigger to open the AlertDialog when "Payment Order" button is clicked */}
+              <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button type="button" onClick={handleDialogOpen}>
+                    Payment Order
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action will create the order. Please confirm to
+                      proceed.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel onClick={handleDialogClose}>
+                      Cancel
+                    </AlertDialogCancel>
+                    {/* Confirm button triggers form submission */}
+                    <AlertDialogAction type="button" onClick={handleConfirm}>
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
+          ) : (
+            <Button type="button">
+              <Link href="/categories">Cart Empty, Go To Shopping</Link>
+            </Button>
+          )
+        ) : (
+          <Button onClick={handleContinue}>Continue</Button>
         )}
       </form>
     </Form>

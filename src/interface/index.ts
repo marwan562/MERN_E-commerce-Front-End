@@ -50,3 +50,38 @@ export interface TWashlist {
   userId: number;
   productId: IProductsTypes;
 }
+
+export type TCreateOrder = {
+  userId?: number;
+  cartItems: CartItem[];
+  deliveryDetails: DeliveryDetails;
+};
+
+export interface IResOrder {
+  userId: string;
+  cartItems: CartItem[];
+  deliveryDetails: DeliveryDetails;
+  totalAmount: number;
+  status: string;
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}
+
+export interface CartItem {
+  productId: number;
+  quantity: number;
+  img: string;
+  title: string;
+  _id?: string;
+}
+
+export interface DeliveryDetails {
+  name: string;
+  city: string;
+  country: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+}

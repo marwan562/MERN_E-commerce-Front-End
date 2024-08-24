@@ -15,11 +15,14 @@ const AddToCart = ({ data }: { data: IProductsTypes }) => {
       return toast.error("Product Saled.");
     }
     const token = await getToken();
+    if (!token) {
+      return toast.error("Log In To Add Product.");
+    }
     dispatch(
       actAddCartItem({
         productId: data._id,
         token,
-        quantity:data.quantity
+        quantity: data.quantity,
       })
     );
   };

@@ -1,5 +1,5 @@
 import React from "react";
-import NextBreadcrumb from "@/components/NextBreadcrumb"; // Adjust the path as needed
+import NextBreadcrumb from "@/components/NextBreadcrumb"; 
 import DetailsProduct from "@/components/DetailsProduct";
 import LeftBaner from "@/components/LeftBaner";
 import { IProductsTypes } from "@/interface";
@@ -33,7 +33,7 @@ const DetailsProductPage = async ({
           listClasses="text-blue-500"
           activeClasses="font-bold"
           capitalizeLinks
-          productTitle={productDetails.title} // Pass the product title
+          productTitle={productDetails.title}
         />
         <div className="flex flex-wrap -mx-4 mt-8">
           <LeftBaner image={productDetails.img} />

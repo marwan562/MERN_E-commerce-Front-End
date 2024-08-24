@@ -18,7 +18,7 @@ export const actDeleteItem = createAsyncThunk<TCartItems[], TProps>(
         {
           method: "DELETE",
           headers: {
-            "Content-Type": "application/json",
+            
             Authorization: `Bearer ${token}`,
             mode:"cors"
           },

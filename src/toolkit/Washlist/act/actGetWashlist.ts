@@ -25,7 +25,6 @@ export const actGetWashlist = createAsyncThunk<
   } catch (err) {
     const errorMessage =
       err instanceof Error ? err.message : "An unknown error occurred.";
-    toast.error(errorMessage);
     return rejectWithValue(errorMessage);
   }
 });

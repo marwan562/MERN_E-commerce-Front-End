@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image";
 import NavCart from "./NavCart";
 import NavigationMenu from "@/components/NavigationMenu";
@@ -6,8 +7,10 @@ import LogInUser from "../Bottons/LogInUser";
 import WashlistHeader from "./WashlistHeader";
 import Link from "next/link";
 import NavSearch from "../NavSearch";
+import { useAppSelector } from "@/lib/store";
 
 const Navbar = () => {
+  const { isAuthanticated } = useAppSelector((state) => state.auth);
   return (
     <nav>
       <div className="flex backdrop-blur-lg z-50 items-center container mx-auto px-3 border-b border-x rounded-b-md border-x-black border-b-black pb-3 justify-between pt-5 fixed top-0 left-0 right-0">
@@ -27,11 +30,15 @@ const Navbar = () => {
           <NavigationMenu />
         </div>
         <div className="flex items-center justify-center gap-5">
-        <NavSearch />
+          <NavSearch />
 
-          <NavCart />
+          {isAuthanticated && (
+            <>
+              <NavCart />
+              <WashlistHeader />
+            </>
+          )}
 
-          <WashlistHeader />
           <LogInUser />
         </div>
       </div>

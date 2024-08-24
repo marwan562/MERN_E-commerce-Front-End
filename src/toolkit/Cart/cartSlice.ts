@@ -26,7 +26,6 @@ const cartSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // add item to cart
     builder
       .addCase(actAddCartItem.pending, (state) => {
         state.status = "loading";

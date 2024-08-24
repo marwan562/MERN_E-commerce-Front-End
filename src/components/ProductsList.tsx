@@ -30,7 +30,7 @@ const ProductList = ({
   const [loading, setLoading] = useState(false);
 
   const handleAddToWashlist = useCallback(async () => {
-    setLoading(true); // Start loading state
+    setLoading(true); 
     try {
       const token = await getToken();
       if (token) {

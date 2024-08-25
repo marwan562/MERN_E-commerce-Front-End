@@ -33,7 +33,7 @@ const LottieHandler = ({
   return (
     <div className={className}>
       <div className={`${size}  flex flex-col items-center justify-center space-y-2`}>
-        <Lottie animationData={lottie} />
+        <Lottie size={500} animationData={lottie} />
        {Button}
         {message && <h2 className={` text-center text-3xl ${colorMessage}`}> {message}</h2>}
       </div>

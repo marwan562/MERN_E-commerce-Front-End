@@ -2,7 +2,7 @@ import React from "react";
 
 interface OrdersPaginationProps {
   currentPage: number;
-  totalPages: number;
+  totalPages?: number;
   onPageChange: (page: number) => void;
 }
 
@@ -13,7 +13,7 @@ const OrdersPagination: React.FC<OrdersPaginationProps> = ({
 }) => {
   const renderPageNumbers = () => {
     const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = 1; i <= (totalPages ?? 1); i++) {
       pageNumbers.push(
         <li key={i}>
           <a
@@ -75,7 +75,7 @@ const OrdersPagination: React.FC<OrdersPaginationProps> = ({
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                if (currentPage < totalPages) onPageChange(currentPage + 1);
+                if (currentPage < (totalPages ?? 1)) onPageChange(currentPage + 1);
               }}
               className="flex h-8 items-center justify-center rounded-e-lg border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >

@@ -4,30 +4,44 @@ import React, { useEffect, useState } from "react";
 import MyOrdersList from "@/components/E-commerce/MyOrdersList";
 import FilterMyOrders from "@/components/FilterMyOrders";
 import OrdersPagination from "@/components/OrdersPagination";
-import { useGetMyOrdersQuery } from "@/toolkit/Apis/OrderApi";
+import { useGetMyOrdersQuery, useUpdateMyOrderMutation } from "@/toolkit/Apis/OrderApi";
 import { TStatusOrder } from "@/interface";
 import LottieHandler from "@/components/Feedback/Lottiefiles/LottieHandler";
 import { useAuth } from "@clerk/nextjs";
+import { toast } from "sonner";
 
-const MyOrders = () => {
-  const { getToken } = useAuth();
-  const [page, setPage] = useState(1);
+const MyOrders: React.FC = () => {
+  const [page, setPage] = useState<number>(1);
   const [status, setStatus] = useState<TStatusOrder | "">("");
   const [duration, setDuration] = useState<string>("this week");
   const [token, setToken] = useState<string | null>(null);
+  const { getToken } = useAuth();
 
   useEffect(() => {
     const fetchToken = async () => {
-      const token = await getToken();
-      setToken(token);
+      const authToken = await getToken();
+      setToken(authToken);
     };
     fetchToken();
   }, [getToken]);
 
-  const { data, isLoading } = useGetMyOrdersQuery(
-    { token, page, status, duration }, 
+  const { data, isLoading ,refetch} = useGetMyOrdersQuery(
+    { token, page, status, duration },
     { skip: !token }
   );
+
+  const [updateOrder] = useUpdateMyOrderMutation();
+
+  const handleCancelOrder = async (id: string) => {
+    try {
+      await updateOrder({ token, id }).unwrap()
+      toast.success("Cancelled Order Successfuly.")
+      // Explicitly refetch the orders after updating
+      refetch();
+    } catch (error) {
+      toast.error("Something Went Be Wrong Try Again Later.")
+    }
+  };
 
   if (!token) {
     return <div>Please log in to view your orders.</div>;
@@ -35,10 +49,6 @@ const MyOrders = () => {
 
   if (isLoading) {
     return <LottieHandler type="loadingCart" />;
-  }
-
-  if (!data || data.orders.length === 0) {
-    return <div>No orders found.</div>;
   }
 
   return (
@@ -49,19 +59,20 @@ const MyOrders = () => {
             My orders
           </h2>
           {/* Filter orders by status and duration */}
-          <FilterMyOrders
-            onStatusChange={setStatus}
-            onDurationChange={setDuration}
-          />
+          <FilterMyOrders onStatusChange={setStatus} onDurationChange={setDuration} />
         </div>
 
+        {!data?.orders.length && (
+          <LottieHandler type="cartEmpty" message="Orders Not Found" />
+        )}
+
         {/* Display the list of orders */}
-        <MyOrdersList orders={data.orders} />
+        <MyOrdersList orders={data?.orders} handleCancelOrder={handleCancelOrder} />
 
         {/* Pagination Component */}
         <OrdersPagination
           currentPage={page}
-          totalPages={data.pagination.totalPages}
+          totalPages={data?.pagination.totalPages || 1}
           onPageChange={setPage}
         />
       </div>

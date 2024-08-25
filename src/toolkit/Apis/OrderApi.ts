@@ -1,4 +1,9 @@
-import { IResOrder, TCreateOrder, TResMyOrder, TStatusOrder } from "@/interface"; 
+import {
+  IResOrder,
+  TCreateOrder,
+  TResMyOrder,
+  TStatusOrder,
+} from "@/interface";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const orderApi = createApi({
@@ -39,7 +44,12 @@ export const orderApi = createApi({
     // Get My Orders with status and duration filters
     getMyOrders: builder.query<
       TResMyOrder,
-      { token: string | null; page: number; status: TStatusOrder | ""; duration: string }
+      {
+        token: string | null;
+        page: number;
+        status: TStatusOrder | "";
+        duration: string;
+      }
     >({
       query: ({ token, page, status, duration }) => ({
         url: `/user/getAllOrders`,
@@ -50,7 +60,33 @@ export const orderApi = createApi({
         },
         mode: "cors",
       }),
-      providesTags: ["myOrders"],
+      providesTags: (result) =>
+        result
+          ? [
+              { type: "myOrders", id: "LIST" },
+              ...result.orders.map(({ _id }) => ({
+                type: "myOrders",
+                id: _id,
+              })), // Individual order tags
+            ]
+          : [{ type: "myOrders", id: "LIST" }],
+    }),
+    updateMyOrder: builder.mutation<
+      IResOrder,
+      { token: string | null; id: string }
+    >({
+      query: ({ token, id }) => ({
+        url: `/user/myOrder/${id}`,
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        mode: "cors",
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: "myOrders", id: "LIST" },
+        { type: "myOrders", id },
+      ],
     }),
   }),
 });
@@ -58,5 +94,7 @@ export const orderApi = createApi({
 export const {
   useCreateOrderMutation,
   useGetOrderByIdQuery,
+
   useGetMyOrdersQuery,
+  useUpdateMyOrderMutation,
 } = orderApi;

@@ -1,4 +1,5 @@
 "use client";
+import LottieHandler from "@/components/Feedback/Lottiefiles/LottieHandler";
 import OrderItems from "@/components/OrderItems";
 import CardsPaymentMethod from "@/components/PaymentCard";
 import { Badge } from "@/components/ui/badge";
@@ -21,28 +22,38 @@ const CheckoutOrdersPage = () => {
 
           {cartItems.length > 0 ? (
             cartItems.map(({ _id, productId, quantity }) => (
-              <OrderItems key={_id} {...productId} quantity={quantity} />
+              <>
+                <OrderItems key={_id} {...productId} quantity={quantity} />
+              </>
             ))
           ) : (
-            <div> Yout don{"'"}t have any proudct in Cart.</div>
+            <LottieHandler
+              className="flex flex-col  justify-center h-[40vh]"
+              type="cartEmpty"
+              size="w-[800px]"
+              message="Cart Empty."
+              colorMessage="text-red-700"
+            />
           )}
-          <div className="flex flex-row justify-between items-center">
-            <ul className=" space-y-1">
-              <li className="text-slate-500">Suptotal</li>
-              <li className="text-slate-500">Discount</li>
-              <li className=" font-semibold mt-1 text-2xl">Total</li>
-            </ul>
-            <ul className=" space-y-1">
-              <li className="text-slate-500"> ${totalPrice}</li>
-              <li className="text-slate-500">-${DISCOUNT}</li>
-              <li className="mt-1">
-                <Badge className=" text-lg">${totalPrice - DISCOUNT}</Badge>
-              </li>
-            </ul>
-          </div>
+          {cartItems.length > 0 && (
+            <div className="flex flex-row justify-between items-center">
+              <ul className=" space-y-1">
+                <li className="text-slate-500">Suptotal</li>
+                <li className="text-slate-500">Discount</li>
+                <li className=" font-semibold mt-1 text-2xl">Total</li>
+              </ul>
+              <ul className=" space-y-1">
+                <li className="text-slate-500"> ${totalPrice}</li>
+                <li className="text-slate-500">-${DISCOUNT}</li>
+                <li className="mt-1">
+                  <Badge className=" text-lg">${totalPrice - DISCOUNT}</Badge>
+                </li>
+              </ul>
+            </div>
+          )}
         </section>
 
-        <section className="lg:w-2/4 bg-white p-4 rounded-lg shadow-md ml-0 lg:ml-4 mt-4 lg:mt-0   h-fit">
+        <section className="lg:w-1/3 bg-white p-4 rounded-lg shadow-md ml-0 lg:ml-4 mt-4 lg:mt-0   h-fit">
           <CardsPaymentMethod />
         </section>
       </main>

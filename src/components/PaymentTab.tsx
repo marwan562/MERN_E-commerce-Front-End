@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TabsContent } from "./ui/tabs";
 import {
   Card,
@@ -21,11 +21,13 @@ const PaymentTab = () => {
   const { getToken } = useAuth();
   const dispatch = useAppDispatch();
   const navigate = useRouter();
-  const [createOrder, { isLoading }] = useCreateOrderMutation();
+  const [isLoading, setIsLoading] = useState(false)
+  const [createOrder] = useCreateOrderMutation();
   const { cartItems } = useAppSelector((state) => state.cart);
   const { user } = useAppSelector((state) => state.auth);
 
   const handleCreateOrder = async (fromCheckout: TFormPaymentCard) => {
+    setIsLoading(true)
     const token = await getToken();
 
     if (!token) {
@@ -54,12 +56,13 @@ const PaymentTab = () => {
 
     try {
       const data = await createOrder({ order, token }).unwrap();
-      navigate.push(`/checkout-payment?orderId=${data.userId}&status=${data}`);
-
-      toast.success("Order Created Successfully");
       dispatch(cleanCartItemsAction());
+      toast.success("Order Created Successfully");
+      navigate.push(`/checkout-payment?orderId=${data._id}&status=Pending`);
+      setIsLoading(false)
     } catch (err) {
       toast.error("Error in server ");
+      setIsLoading(false)
     }
   };
   return (
@@ -73,8 +76,9 @@ const PaymentTab = () => {
         </CardHeader>
         <CardContent className="flex flex-col space-y-4 pt-2 bg-slate-100">
           <FromCheckoutPaymentCard
-            onSubmit={handleCreateOrder}
             user={user}
+            isLoading={isLoading}
+            onSubmit={handleCreateOrder}
             cartLength={cartItems.length}
           />
         </CardContent>

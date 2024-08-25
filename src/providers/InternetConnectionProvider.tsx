@@ -1,77 +1,67 @@
 "use client";
 
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store";
 import { getNetworkAction } from "@/toolkit/Network/networkSlice";
 import { Wifi, WifiOff } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 
-const InternetConnectionProvider = ({ children }: { children: ReactNode }) => {
-  const toastIdRef = useRef<string | undefined>(undefined);
-  const { dismiss, toast } = useToast();
+const InternetConnecationProvider = ({ children }: { children: ReactNode }) => {
+  const { toast } = useToast();
   const { network } = useAppSelector(({ network }) => network);
   const dispatch = useAppDispatch();
-  const [wasOffline, setWasOffline] = useState(false);
-
-  function addToastOffline() {
-    if (toastIdRef.current) {
-      dismiss(toastIdRef.current);
-    }
-    toastIdRef.current = toast({
+  const  addToastOffline = () => {
+    toast({
       title: (
         <div className="flex items-center">
           <WifiOff className="mr-2" />
-          <span className="first-letter:capitalize">You{"'"}re Offline.</span>
+          <span className="first-letter:capitalize">You'r Offline.</span>
         </div>
       ),
-      description: "Please make sure your internet connection.",
-      action: <ToastAction altText="Go to schedule to undo">Ok</ToastAction>,
-    })?.id as string;
+      description: "Please make sure you'r internet connection.",
+      action: <ToastAction altText="Goto schedule to undo">Ok</ToastAction>,
+      duration: 5000,
+    });
   }
-
+  
   function addToastOnline() {
-    if (toastIdRef.current) {
-      dismiss(toastIdRef.current);
-    }
-    toastIdRef.current = toast({
+    toast({
       title: (
         <div className="flex items-center">
           <Wifi className="mr-2" />
-          <span className="first-letter:capitalize">You{"'"}re Online.</span>
+          <span className="first-letter:capitalize">You'r Online.</span>
         </div>
       ),
-      description: "Please check your internet connection regularly.",
-      action: <ToastAction altText="Go to schedule to undo">Ok</ToastAction>,
-      duration: 10000,
-    })?.id as string;
+      description: "Please evry time check internet connection.",
+      action: <ToastAction altText="Goto schedule to undo">Ok</ToastAction>,
+      duration: 5000,
+    });
   }
 
   useEffect(() => {
-    const handleOffline = () => dispatch(getNetworkAction(false));
-    const handleOnline = () => dispatch(getNetworkAction(true));
+    window.addEventListener("offline", () => {
+      addToastOffline();
+      dispatch(getNetworkAction(false));
+    });
 
-    window.addEventListener("offline", handleOffline);
-    window.addEventListener("online", handleOnline);
+    window.addEventListener("online", () => {
+      addToastOnline();
+      dispatch(getNetworkAction(true));
+    });
 
     return () => {
-      window.removeEventListener("offline", handleOffline);
-      window.removeEventListener("online", handleOnline);
+      removeEventListener("online", () => {
+        dispatch(getNetworkAction(true));
+      });
+      removeEventListener("offline", () => {
+        dispatch(getNetworkAction(false));
+      });
     };
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (network === false) {
-      setWasOffline(true); 
-      addToastOffline();
-    } else if (network === true && wasOffline) {
-      addToastOnline();
-      setWasOffline(false);
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [network, wasOffline]);
+  }, [ dispatch]);
 
   return <>{children}</>;
 };
 
-export default InternetConnectionProvider;
+export default InternetConnecationProvider;

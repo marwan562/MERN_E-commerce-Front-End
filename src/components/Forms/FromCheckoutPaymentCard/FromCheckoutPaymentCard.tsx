@@ -22,17 +22,20 @@ import {
   checkoutSchema,
   TFormPaymentCard,
 } from "../validations/checkoutSchemaCardPayment";
+import { Loader } from "lucide-react";
 
 type TProps = {
+  user?: User | null;
+  isLoading: boolean;
   cartLength: number;
   defaultValues?: TFormPaymentCard;
-  user?: User | null;
   onSubmit: (val: TFormPaymentCard) => void;
 };
 
 export default function FromCheckoutPaymentCard({
-  cartLength,
   user,
+  isLoading,
+  cartLength,
   defaultValues,
   onSubmit,
 }: TProps) {
@@ -73,7 +76,7 @@ export default function FromCheckoutPaymentCard({
 
   const handleConfirm = () => {
     handleSubmit(onSubmitForm)();
-    setIsDialogOpen(false); 
+    setIsDialogOpen(false);
   };
 
   useEffect(() => {
@@ -104,7 +107,9 @@ export default function FromCheckoutPaymentCard({
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
                     <AlertDialogDescription>
                       This action will create the order. Please confirm to
                       proceed.
@@ -116,7 +121,14 @@ export default function FromCheckoutPaymentCard({
                     </AlertDialogCancel>
                     {/* Confirm button triggers form submission */}
                     <AlertDialogAction type="button" onClick={handleConfirm}>
-                      Continue
+                      {isLoading ? (
+                        <span className={"flex items-center gap-2"}>
+                          <Loader className=" animate-spin  text-white" /> Check
+                          Payment...
+                        </span>
+                      ) : (
+                        "Continue"
+                      )}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -128,7 +140,14 @@ export default function FromCheckoutPaymentCard({
             </Button>
           )
         ) : (
-          <Button onClick={handleContinue}>Continue</Button>
+          <Button onClick={handleContinue}>{isLoading ? (
+            <span className={"flex items-center gap-2"}>
+              <Loader className=" animate-spin  text-white" /> Check
+              Order...
+            </span>
+          ) : (
+            "Continue"
+          )}</Button>
         )}
       </form>
     </Form>

@@ -18,9 +18,8 @@ export const actDeleteItem = createAsyncThunk<TCartItems[], TProps>(
         {
           method: "DELETE",
           headers: {
-            
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            mode:"cors"
           },
           body: JSON.stringify({productId}),
         }
@@ -30,7 +29,7 @@ export const actDeleteItem = createAsyncThunk<TCartItems[], TProps>(
         throw new Error("Network response was not ok");
       }
       toast.success("Rmove Item From Cart Successfully");
-      (productId);
+      
       return (await response.json()) as TCartItems[];
     } catch (err) {
       toast.error(`${err}`);

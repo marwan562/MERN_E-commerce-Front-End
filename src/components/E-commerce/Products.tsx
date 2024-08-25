@@ -26,16 +26,19 @@ async function getProducts() {
 const Products = () => {
   const dispatch = useAppDispatch();
   const { getToken } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<IProductsTypes[]>([]);
   const { washlist } = useAppSelector((state) => state.washlist);
+  const { network } = useAppSelector((state) => state.network);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
+
         const data = await getProducts();
-        const token = await getToken();
         setProducts(data as IProductsTypes[]);
-        await dispatch(actGetWashlist(token));
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -49,12 +52,12 @@ const Products = () => {
     inWashlist: washlist.some((item) => item.productId._id === product._id),
   }));
 
-
   return (
     <main className="mb-36 container mx-auto">
       <h2 className="text-3xl border-b-2 border-black font-mono">Products</h2>
       <br />
       <div className="grid grid-cols-1 m-3 gap-2 sm:gap-0 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+        { !network || isLoading && <ProductsSkeletons/>}
         {productsWithWashlist.map((el) => (
           <ProductList key={el._id} {...el} />
         ))}

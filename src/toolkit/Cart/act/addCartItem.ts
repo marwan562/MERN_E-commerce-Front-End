@@ -21,7 +21,7 @@ export const actAddCartItem = createAsyncThunk(
             Authorization: `Bearer ${token}`,
             mode: "cors",
           },
-          body: JSON.stringify({ productId }),
+          body: JSON.stringify({productId}),
         }
       );
 

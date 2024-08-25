@@ -62,13 +62,19 @@ export interface IResOrder {
   cartItems: CartItem[];
   deliveryDetails: DeliveryDetails;
   totalAmount: number;
-  status: string;
+  status: TStatusOrder;
   _id: string;
   createdAt: Date;
   updatedAt: Date;
   __v: number;
 }
 
+export type TStatusOrder =
+  | "Pending"
+  | "Processing"
+  | "Shipped"
+  | "Delivered"
+  | "Cancelled";
 export interface CartItem {
   productId: number;
   quantity: number;
@@ -84,4 +90,14 @@ export interface DeliveryDetails {
   email: string;
   phoneNumber: string;
   address: string;
+}
+
+export interface TResMyOrder {
+  orders: IResOrder[];
+  pagination: {
+    totalOrders: number;
+    totalPages:number
+    page: number;
+    pageSize: number;
+  };
 }

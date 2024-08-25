@@ -28,7 +28,7 @@ const NavCart = () => {
   const dispatch = useAppDispatch();
   const [animate, setAnimate] = useState(false);
   const { getToken } = useAuth();
-  const { cartItems, status } = useAppSelector((state) => state.cart);
+  const { cartItems } = useAppSelector((state) => state.cart);
 
   const totalQuantity = cartItems?.reduce(
     (total, item) => total + (item.quantity ?? 0),
@@ -174,11 +174,11 @@ const NavCart = () => {
                 <div>You don{"'"}t have any product</div>
               )}
               {cartItems.length > 0 ? (
-                <Link href={"/checkout-order"}>
-                  <Button className="w-full">
+                  <Link href={"/checkout-order"}>
+                <Button className="w-full mt-2">
                     Order Now ${totalPrice.toFixed(2)}
-                  </Button>
-                </Link>
+                </Button>
+                  </Link>
               ) : null}
             </div>
           </div>

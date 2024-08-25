@@ -18,6 +18,7 @@ const AddToCart = ({ data }: { data: IProductsTypes }) => {
     if (!token) {
       return toast.error("Log In To Add Product.");
     }
+    console.log(data._id)
     dispatch(
       actAddCartItem({
         productId: data._id,

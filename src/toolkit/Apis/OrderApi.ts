@@ -10,6 +10,7 @@ export const orderApi = createApi({
   reducerPath: "orderApi",
   baseQuery: fetchBaseQuery({ baseUrl: process.env.BASE_URL }),
   tagTypes: ["myOrders"],
+ 
   endpoints: (builder) => ({
     // Find order by Id
     getOrderById: builder.query<
@@ -41,7 +42,6 @@ export const orderApi = createApi({
         mode: "cors",
       }),
     }),
-    // Get My Orders with status and duration filters
     getMyOrders: builder.query<
       TResMyOrder,
       {
@@ -60,6 +60,7 @@ export const orderApi = createApi({
         },
         mode: "cors",
       }),
+    
       providesTags: (result) =>
         result
           ? [
@@ -67,7 +68,7 @@ export const orderApi = createApi({
               ...result.orders.map(({ _id }) => ({
                 type: "myOrders",
                 id: _id,
-              })), // Individual order tags
+              })),
             ]
           : [{ type: "myOrders", id: "LIST" }],
     }),

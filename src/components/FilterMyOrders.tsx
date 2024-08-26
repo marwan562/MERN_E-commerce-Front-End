@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TStatusOrder } from "@/interface";
 
 interface FilterMyOrdersProps {
@@ -13,16 +13,20 @@ const FilterMyOrders: React.FC<FilterMyOrdersProps> = ({
   const [orderType, setOrderType] = useState<TStatusOrder | "">("");
   const [duration, setDuration] = useState<string>("this week");
 
+  useEffect(() => {
+    onStatusChange(orderType);
+  }, [orderType, onStatusChange]);
+
+  useEffect(() => {
+    onDurationChange(duration);
+  }, [duration, onDurationChange]);
+
   const handleOrderTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOrderType = e.target.value as TStatusOrder | "";
-    setOrderType(selectedOrderType);
-    onStatusChange(selectedOrderType);
+    setOrderType(e.target.value as TStatusOrder | "");
   };
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedDuration = e.target.value;
-    setDuration(selectedDuration);
-    onDurationChange(selectedDuration);
+    setDuration(e.target.value);
   };
 
   return (

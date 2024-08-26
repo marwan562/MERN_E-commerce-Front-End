@@ -56,7 +56,7 @@ const Products = () => {
     <main className="mb-36 container mx-auto">
       <h2 className="text-3xl border-b-2 border-black font-mono">Products</h2>
       <br />
-      <div className="grid grid-cols-1 m-3 gap-2 sm:gap-0 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 m-3 gap-2 sm:gap-0 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         { !network || isLoading && <ProductsSkeletons/>}
         {productsWithWashlist.map((el) => (
           <ProductList key={el._id} {...el} />

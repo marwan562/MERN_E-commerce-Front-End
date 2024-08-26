@@ -1,11 +1,14 @@
+"use client"
+import LottieHandler from '@/components/Feedback/Lottiefiles/LottieHandler'
+import { Button } from '@/components/ui/button'
+import { Home } from 'lucide-react'
 import Link from 'next/link'
+
  
 export default function NotFound() {
   return (
     <div>
-      <h2>Not Found</h2>
-      <p>Could not find requested resource</p>
-      <Link href="/">Return Home</Link>
+      <LottieHandler type={"pageNotFound"} colorMessage='text-gray-600' message='Page Not Found.' Button={<Link href="/"><Button variant={"link"}> <Home className=' mr-2'/> Back To Home Page</Button></Link>}/>
     </div>
   )
 }

@@ -3,13 +3,17 @@ import Lottie from "lottie-react";
 import loadingCart from "./loading.json";
 import paymentError from "./paymentError.json";
 import cartEmpty from "./cartEmpty.json";
+import pageNotFound from "./pageNotFound.json";
+import trackingTruck from "./trackingTruck.json";
 import paymentSuccessfully from "./paymentSuccessfully.json";
 
 const lottieTypes = {
   loadingCart,
   paymentError,
   paymentSuccessfully,
-  cartEmpty
+  cartEmpty,
+  trackingTruck,
+  pageNotFound
 };
 
 type TProps = {

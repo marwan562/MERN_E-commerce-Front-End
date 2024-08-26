@@ -9,13 +9,30 @@ import { TStatusOrder } from "@/interface";
 import LottieHandler from "@/components/Feedback/Lottiefiles/LottieHandler";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const MyOrders: React.FC = () => {
+  const router = useRouter();
   const [page, setPage] = useState<number>(1);
   const [status, setStatus] = useState<TStatusOrder | "">("");
   const [duration, setDuration] = useState<string>("this week");
   const [token, setToken] = useState<string | null>(null);
   const { getToken } = useAuth();
+
+ 
+
+  const [updateOrder] = useUpdateMyOrderMutation();
+
+  const handleCancelOrder = async (id: string) => {
+    try {
+      await updateOrder({ token, id }).unwrap();
+      toast.success("Cancelled Order Successfully.");
+      refetch();
+    } catch (error) {
+      toast.error("Something went wrong. Please try again later.");
+      router.refresh();
+    }
+  };
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -25,25 +42,12 @@ const MyOrders: React.FC = () => {
     fetchToken();
   }, [getToken]);
 
-  const { data, isLoading ,refetch} = useGetMyOrdersQuery(
+  const { data, isLoading, refetch } = useGetMyOrdersQuery(
     { token, page, status, duration },
-    { skip: !token }
+    { skip: !token, pollingInterval:3000 }
   );
 
-  const [updateOrder] = useUpdateMyOrderMutation();
-
-  const handleCancelOrder = async (id: string) => {
-    try {
-      await updateOrder({ token, id }).unwrap()
-      toast.success("Cancelled Order Successfuly.")
-      // Explicitly refetch the orders after updating
-      refetch();
-    } catch (error) {
-      toast.error("Something Went Be Wrong Try Again Later.")
-    }
-  };
-
-  if (!token) {
+  if (!token && !isLoading) {
     return <div>Please log in to view your orders.</div>;
   }
 
@@ -56,7 +60,7 @@ const MyOrders: React.FC = () => {
       <div className="mx-auto">
         <div className="gap-4 sm:flex sm:items-center sm:justify-between">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
-            My orders
+            My Orders
           </h2>
           {/* Filter orders by status and duration */}
           <FilterMyOrders onStatusChange={setStatus} onDurationChange={setDuration} />

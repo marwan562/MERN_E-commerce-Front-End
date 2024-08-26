@@ -45,8 +45,8 @@ const WashlistHeader = () => {
   }, [totalWashlist]);
 
   return (
-    <Drawer>
-      <DrawerTrigger>
+    <Drawer >
+      <DrawerTrigger > 
         <div className="flex items-center space-x-1 hover:underline tracking-wide font-bold text-[15px] cursor-pointer">
           <Image
             src="/svg/washlist.svg"
@@ -59,13 +59,13 @@ const WashlistHeader = () => {
           </span>
         </div>
       </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent >
         <DrawerHeader>
           <DrawerTitle>Washlist</DrawerTitle>
           <DrawerDescription>Your favorite products.</DrawerDescription>
         </DrawerHeader>
         <DrawerFooter>
-          <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+          <ScrollArea className="w-full rounded-md border">
             <div className="flex w-max space-x-4 p-4">
               {washlist.map((item) => (
                 <ProductList

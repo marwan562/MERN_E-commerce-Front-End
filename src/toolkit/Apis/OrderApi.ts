@@ -16,14 +16,12 @@ export const orderApi = createApi({
     getAllOrders: builder.query<TResMyOrder, {
       token: string | null;
       page: number;
-      pageSize: number;
       status?: TStatusOrder;
-      search?: string;
     }>({
-      query: ({ token, page, pageSize, status, search }) => ({
+      query: ({ token, page, status }) => ({
         url: "/order/getAllOrders",
         headers: { Authorization: `Bearer ${token}` },
-        params: { page, pageSize, status, search },
+        params: { page, status },
       }),
       providesTags: (result) =>
         result

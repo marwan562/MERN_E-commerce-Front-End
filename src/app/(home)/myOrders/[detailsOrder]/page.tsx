@@ -17,7 +17,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import OrderDetailsSkeleton from "@/components/Feedback/Skeletons/OrderDetailsSkeleton";
+import OrderDetailsSkeleton from "@/components/skeletons/OrderDetailsSkeleton";
 import { TStatusOrder } from "@/interface";
 
 const statusConfig: Record<

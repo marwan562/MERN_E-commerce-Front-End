@@ -30,7 +30,7 @@ export interface User {
   email: string;
   phoneMobile?: number;
   imageUrl: string;
-  role: "admin" | "user" | "superAdmin";
+  role: "admin" | "user" 
   createdAt: Date;
   updatedAt: Date;
 }

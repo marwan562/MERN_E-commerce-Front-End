@@ -1,8 +1,6 @@
-// RootLayout.tsx
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/E-commerce/Navbar";
 import StoreProvider from "@/providers/StoreProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
@@ -18,12 +16,19 @@ export const metadata: Metadata = {
   description: "Black Ecommerce",
 };
 
+
+const getUser = async  () => {
+  const res = fetch(`${process.env.BASE_URL}/pro`)
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   const clerkPubKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
   return (
     <ClerkProvider publishableKey={clerkPubKey}>
       <html lang="en">
@@ -31,12 +36,8 @@ export default function RootLayout({
           <StoreProvider>
             <InternetConnecationProvider>
               <NextTopLoading />
-              {/* App */}
-              <div className="flex-1">
-                <Navbar />
-                <main className="flex-1">{children}</main>
-                <Footer />
-              </div>
+
+              {children}
 
               <Toaster />
               <ToasterSonner position="top-center" />

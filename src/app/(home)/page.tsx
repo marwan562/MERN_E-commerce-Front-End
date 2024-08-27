@@ -18,7 +18,7 @@ export default function Home() {
       <Componies />
       <Blogs />
       <MeetTheArtist />
-      <InstagramSwipper />
+      <InstagramSwipper  />
     </div>
   );
 }

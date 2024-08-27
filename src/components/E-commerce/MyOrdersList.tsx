@@ -140,7 +140,7 @@ const MyOrdersList: React.FC<MyOrdersListProps> = ({
                   href={`/myOrders/${order._id}`}
                   className="w-full flex items-center gap-1 rounded-lg border border-gray-700 px-3 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-500 dark:text-gray-500 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-900 lg:w-auto"
                 >
-                  <Eye className="size-5 "/>
+                  <Eye className="size-5 " />
                   View Details
                 </Link>
               </div>

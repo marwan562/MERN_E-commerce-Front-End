@@ -13,10 +13,11 @@ import {
 import storage from "redux-persist/lib/storage";
 import cartSlice from "@/toolkit/Cart/cartSlice";
 import authSlice from "@/toolkit/auth/authSlice";
-import networkSlice from "@/toolkit/Network/networkSlice"
+import networkSlice from "@/toolkit/Network/networkSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { orderApi } from "@/toolkit/Apis/OrderApi";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import { categoryApi } from "@/toolkit/Apis/CategoryApi";
 
 const rootPersistConfig = {
   key: "root",
@@ -45,8 +46,9 @@ const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authSlice),
   cart: persistReducer(CartPersistConfig, cartSlice),
   washlist: persistReducer(WashlistPersistConfig, washlistSlice),
-  network:networkSlice,
+  network: networkSlice,
   [orderApi.reducerPath]: orderApi.reducer,
+  [categoryApi.reducerPath]: categoryApi.reducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
@@ -58,7 +60,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(orderApi.middleware),
+    }).concat(orderApi.middleware, categoryApi.middleware),
   devTools: process.env.NODE_ENV !== "production",
 });
 

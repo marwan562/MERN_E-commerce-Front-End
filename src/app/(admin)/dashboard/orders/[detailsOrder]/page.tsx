@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import OrderDetailsSkeleton from "@/components/skeletons/OrderDetailsSkeleton";
 import { TStatusOrder } from "@/interface";
+import { getStatusDetails } from "@/utils/getStatusOrder";
 
 const statusConfig: Record<
   TStatusOrder,
@@ -100,7 +101,7 @@ const ProgressIndicator = ({
       </div>
       <div className="h-2 w-full rounded-full bg-gray-200">
         <div
-          className={`h-full rounded-full ${statusConfig[currentStatus].bgColor} transition-all duration-500 ease-in-out`}
+          className={`h-full rounded-full animate-pulse duration-300 ${statusConfig[currentStatus].bgColor} transition-all duration-500 ease-in-out`}
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -131,7 +132,7 @@ export default function OrderDetails({
     isError,
   } = useGetOrderByIdQuery(
     { orderId: params.detailsOrder, token },
-    { skip: !token, pollingInterval: 10000 }
+    { skip: !token }
   );
 
   if (isLoading) {
@@ -156,15 +157,15 @@ export default function OrderDetails({
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Order #{order._id}</span>
-            <Badge
-              variant={order.status === "Cancelled" ? "destructive" : "default"}
-            >
-              {order.status}
+            <Badge className={getStatusDetails(order.status).classes}>
+              {getStatusDetails(order.status).icon}
+
+              <span>{order.status}</span>
             </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ProgressIndicator currentStatus={order.status} />
+          <ProgressIndicator  currentStatus={order.status} />
 
           {order.status === "Cancelled" && (
             <Alert variant="destructive" className="mb-6">

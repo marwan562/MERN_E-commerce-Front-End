@@ -15,10 +15,9 @@ import {
 } from "@/toolkit/Apis/OrderApi";
 import { TStatusOrder } from "@/interface";
 import { toast } from "sonner";
-import { PaginationOrders } from "../../components/paginationOrder";
-import { OrderRow } from "../../components/OrderRow";
 import { useAuthToken } from "@/hooks/useAuthToken";
 import { OrderTable } from "../../components/OrderTable";
+import { PaginationOrders } from "../../components/PaginationOrder";
 
 export default function OrdersContent() {
   const token = useAuthToken();
@@ -36,7 +35,10 @@ export default function OrdersContent() {
     { skip: !token }
   );
 
-  const handleStatusChange = async (orderId: string, newStatus: TStatusOrder) => {
+  const handleStatusChange = async (
+    orderId: string,
+    newStatus: TStatusOrder
+  ) => {
     try {
       await updateOrder({ orderId, status: newStatus, token }).unwrap();
       toast.success("Update Status Order Successfully.");
@@ -50,6 +52,7 @@ export default function OrdersContent() {
     try {
       await updateOrder({ orderId, status: "Cancelled", token }).unwrap();
       toast.success("Cancelled Order Successfully.");
+      refetch()
     } catch (error) {
       console.error("Failed to cancel order:", error);
     }
@@ -72,7 +75,9 @@ export default function OrdersContent() {
             />
             <Select
               value={statusFilter}
-              onValueChange={(value) => setStatusFilter(value as TStatusOrder | "All")}
+              onValueChange={(value) =>
+                setStatusFilter(value as TStatusOrder | "All")
+              }
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by status" />

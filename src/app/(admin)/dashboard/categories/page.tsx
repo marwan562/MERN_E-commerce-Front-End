@@ -1,59 +1,120 @@
 "use client";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
-const CategoriesContent = () => {
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
+import CategoriesList from "../../components/CategoriesList";
+import {
+  useCreateCategoryMutation,
+  useGetAllCategoriesQuery,
+  useRemoveCategoryMutation,
+  useUpdateCategoryMutation,
+} from "@/toolkit/Apis/CategoryApi";
+import { useAuthToken } from "@/hooks/useAuthToken";
+import { Dialog } from "@radix-ui/react-dialog";
+import FormCategory from "../../components/Form/FormManageCategory/FormCategory";
+
+import {
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
+
+export default function Component() {
+  const token = useAuthToken();
+  const { data, refetch } = useGetAllCategoriesQuery();
+  const [createCategory, { isLoading: isCreating }] =
+    useCreateCategoryMutation();
+  const [updateCategory, { isLoading: isUpdating }] =
+    useUpdateCategoryMutation();
+  const [deleteCategory, { isLoading: isDeleting }] =
+    useRemoveCategoryMutation();
+
+  const handleCreateCategory = async (formData: FormData) => {
+    try {
+      await createCategory({ token, formData }).unwrap();
+      refetch();
+      toast.success("Category Created Successfully.");
+    } catch (err) {
+      toast.error("Error creating category.");
+    }
+  };
+
+  const handleEditCategory = async ({
+    id,
+    formData,
+  }: {
+    id: number;
+    formData: FormData;
+  }) => {
+    try {
+      await updateCategory({ token, id, formData }).unwrap();
+      toast.success("Category Updated Successfully.");
+      refetch();
+    } catch (err) {
+      toast.error("Error updating category.");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteCategory({ id, token }).unwrap();
+      toast.success("Category deleted successfully.");
+      refetch();
+    } catch (error) {
+      toast.error("Failed to delete category.");
+    }
+  };
+  // const handleCreateProduct = (categoryId) => {};
+  // const handleEditProduct = (categoryId, product) => {};
+  // const handleDeleteProduct = (categoryId, productId) => {};
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Product Categories</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Category Name</TableHead>
-              <TableHead>Total Products</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell>Electronics</TableCell>
-              <TableCell>150</TableCell>
-              <TableCell>
-                <span className="px-2 py-1 rounded-full text-xs bg-green-200 text-green-800">
-                  Active
-                </span>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Clothing</TableCell>
-              <TableCell>200</TableCell>
-              <TableCell>
-                <span className="px-2 py-1 rounded-full text-xs bg-green-200 text-green-800">
-                  Active
-                </span>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+    <main className="flex-1 p-4 w-full">
+      <div className="grid flex-1 gap-4">
+        <div className="flex items-center gap-4">
+          <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+            Product Categories
+          </h1>
+          {/* Dailog With Fomr To Edit Category */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="sm">
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Create Category
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit Category</DialogTitle>
+                <DialogDescription>
+                  Make changes to your Category here. Click save when you{"'"}re
+                  done.
+                </DialogDescription>
+              </DialogHeader>
+              <FormCategory
+                titleSubmit="Create New Category"
+                isLoading={isCreating}
+                onSave={handleCreateCategory}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {data?.map((category) => (
+            <CategoriesList
+              key={category._id}
+              {...category}
+              isUpdating={isUpdating}
+              isDeleting={isDeleting}
+              handleEditCategory={handleEditCategory}
+              handleDeleteCagegory={handleDelete}
+            />
+          ))}
+        </div>
+      </div>
+    </main>
   );
-};
-
-
-export default CategoriesContent
+}

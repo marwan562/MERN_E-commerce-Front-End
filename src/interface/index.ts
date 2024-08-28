@@ -9,6 +9,14 @@ export interface IProductsTypes {
   quantity?: number;
   inWashlist?: boolean;
 }
+
+export type TResCategoriesAdmin = {
+  _id: number;
+  title: string;
+  img: string;
+  products: IProductsTypes[];
+};
+
 export interface ICategoriesTypes {
   _id: number;
   title: string;
@@ -30,7 +38,7 @@ export interface User {
   email: string;
   phoneMobile?: number;
   imageUrl: string;
-  role: "admin" | "user" 
+  role: "admin" | "user";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -96,7 +104,7 @@ export interface TResMyOrder {
   orders: IResOrder[];
   pagination: {
     totalOrders: number;
-    totalPages:number
+    totalPages: number;
     page: number;
     pageSize: number;
   };

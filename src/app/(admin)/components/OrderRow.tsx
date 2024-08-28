@@ -14,6 +14,7 @@ import { MoreHorizontal, Eye } from "lucide-react";
 import { IResOrder, TStatusOrder } from "@/interface";
 import { getStatusDetails } from "@/utils/getStatusOrder";
 import { format } from "date-fns"
+import { useRouter } from "next/navigation";
 
 interface OrderRowProps {
   order: IResOrder;
@@ -26,6 +27,7 @@ export function OrderRow({
   handleStatusChange,
   handleCancelOrder,
 }: OrderRowProps) {
+  const { push } = useRouter()
   return (
     <TableRow key={order._id}>
       <TableCell>{order._id}</TableCell>
@@ -48,7 +50,7 @@ export function OrderRow({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => push(`/dashboard/orders/${order._id}`)}>
               <Eye className="mr-2 h-4 w-4" />
               View details
             </DropdownMenuItem>

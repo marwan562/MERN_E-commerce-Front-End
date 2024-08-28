@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, PlusIcon, PlusSquare } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import CategoriesList from "../../components/CategoriesList";
 import {
   useCreateCategoryMutation,
@@ -22,18 +21,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Component() {
   const token = useAuthToken();
-  const { data, refetch } = useGetAllCategoriesQuery();
+  const { data, refetch } = useGetAllCategoriesQuery(
+    {},
+    { skip: false, refetchOnFocus: true }
+  );
   const [createCategory, { isLoading: isCreating }] =
     useCreateCategoryMutation();
   const [updateCategory, { isLoading: isUpdating }] =
@@ -55,7 +50,7 @@ export default function Component() {
     id,
     formData,
   }: {
-    id: number;
+    id: string;
     formData: FormData;
   }) => {
     try {
@@ -67,7 +62,7 @@ export default function Component() {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     try {
       await deleteCategory({ id, token }).unwrap();
       toast.success("Category deleted successfully.");
@@ -118,7 +113,7 @@ export default function Component() {
           </Card>
           {/* Dailog With Fomr To Edit Category */}
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1  gap-4  lg:grid-cols-2 xl:grid-cols-3">
           {data?.map((category) => (
             <CategoriesList
               key={category._id}

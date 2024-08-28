@@ -1,19 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input, InputProps } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-import { Pencil, Trash2, Eye } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import Image from "next/image";
+import { useDebounce } from "use-debounce";
 import {
   Card,
   CardContent,
@@ -21,14 +8,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import { useGetAllProductsQuery } from "@/toolkit/Apis/ProductApi";
+import {
+  useCreateProductMutation,
+  useDeleteProductMutation,
+  useGetAllProductsQuery,
+  useUpdateProductMutation,
+} from "@/toolkit/Apis/ProductApi";
 import { useAuthToken } from "@/hooks/useAuthToken";
-import { useState, useEffect, RefAttributes } from "react";
+import { useState } from "react";
 import { useGetAllCategoriesQuery } from "@/toolkit/Apis/CategoryApi";
 import FilterProducts from "../../components/FilterProducts";
 import ProductsTable from "../../components/ProductsTable";
 import ProductsPagination from "../../components/ProductsPagination";
+import { toast } from "sonner";
 
 export default function Component() {
   const token = useAuthToken();
@@ -36,28 +28,58 @@ export default function Component() {
   const [category, setCategory] = useState("all");
   const [role, setRole] = useState<"New" | "Sale" | "">("");
   const [search, setSearch] = useState("");
-  const [totalPages, setTotalPages] = useState(1);
-
+  const [value] = useDebounce(search, 500);
   const { data, isLoading, refetch } = useGetAllProductsQuery(
-    { page, token, category, role, search },
+    { page, token, category, role, search: value },
     { skip: !token }
   );
+
   const { data: categories } = useGetAllCategoriesQuery();
+  const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
+  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
+  const [removeProduct] = useDeleteProductMutation();
 
-  useEffect(() => {
-    if (data) {
-      setTotalPages(data.pagination.totalPages);
+  // handler mutaions product DELETE,UPDATE,CREATE
+  const handleCreateProduct = async (productData: FormData) => {
+    try {
+      await createProduct({ productData, token }).unwrap();
+      toast.success("Created Product Successfully.");
+      refetch();
+    } catch (err) {
+      toast.error(err as string);
     }
-  }, [data]);
-
-  const handleSearchChange = (
-    event: InputProps & RefAttributes<HTMLInputElement>
-  ) => {
-    setSearch(event.target.value);
-    setPage(1);
-    refetch();
   };
 
+  const handleUpdateProduct = async ({
+    productData,
+    id,
+  }: {
+    productData: FormData;
+    id: string;
+  }) => {
+    try {
+      await updateProduct({ productData, token, id }).unwrap();
+      toast.success("Updated Product Successfully.");
+      refetch();
+    } catch (err) {
+      toast.error(err as string);
+    }
+  };
+
+  const handleRemoveProduct = async (productId: string) => {
+    try {
+      await removeProduct({ productId, token }).unwrap();
+      toast.success("Removed Product Successfully.");
+      refetch();
+    } catch (err) {
+      toast.error(err as string);
+    }
+  };
+  //Filter product
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.currentTarget.value);
+    setPage(1);
+  };
   const handleCategoryChange = (selectedCategory: string) => {
     setCategory(selectedCategory);
     setPage(1);
@@ -83,6 +105,8 @@ export default function Component() {
         search={search}
         category={category}
         categories={categories}
+        isCreating={isCreating}
+        handleCreateProduct={handleCreateProduct}
         handleCategoryChange={handleCategoryChange}
         handleRoleChange={handleRoleChange}
         handleSearchChange={handleSearchChange}
@@ -93,14 +117,19 @@ export default function Component() {
           <CardDescription>Manage your products here</CardDescription>
         </CardHeader>
         <CardContent>
-          <ProductsTable isLoading={isLoading} products={data?.products} />
-          <div className="mt-4 flex justify-center items-center gap-3">
-            <ProductsPagination
-              page={data?.pagination.page}
-              totalPages={data?.pagination.totalPages}
-              handlePageChange={handlePageChange}
-            />
-          </div>
+          <ProductsTable
+            isLoading={isLoading}
+            products={data?.products}
+            isUpdating={isUpdating}
+            handleUpdateProduct={handleUpdateProduct}
+            handleRemoveProduct={handleRemoveProduct}
+          />
+          <ProductsPagination
+            page={data?.pagination.page}
+            totalPages={data?.pagination.totalPages || 1}
+            totalProducts={data?.pagination.totalProducts}
+            onPageChange={setPage}
+          />
         </CardContent>
       </Card>
     </div>

@@ -1,10 +1,12 @@
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -15,18 +17,21 @@ import {
 } from "@/components/ui/select";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input, InputProps } from "@/components/ui/input";
-import {  TResCategoriesAdmin } from "@/interface";
-import {  RefAttributes } from "react";
+import { Input } from "@/components/ui/input";
+import { TResCategoriesAdmin } from "@/interface";
+import FormManageProduct from "./Form/FormManageProduct/FormManageProduct";
+import { memo } from "react";
 
-type TRole = "New" | "Sale" | ""
+type TRole = "New" | "Sale" | "";
 
 type TProps = {
   role: TRole;
   search: string;
   category: string;
-  categories: TResCategoriesAdmin[] | undefined
-  handleSearchChange:(search: InputProps & RefAttributes<HTMLInputElement>) => void
+  isCreating: boolean;
+  categories: TResCategoriesAdmin[] | undefined;
+  handleCreateProduct: (productForm: FormData) => void;
+  handleSearchChange: (search: React.ChangeEvent<HTMLInputElement>) => void;
   handleCategoryChange: (category: string) => void;
   handleRoleChange: (role: TRole) => void;
 };
@@ -37,19 +42,36 @@ const FilterProducts = ({
   handleCategoryChange,
   handleRoleChange,
   handleSearchChange,
+  handleCreateProduct,
+  isCreating,
   role,
   search,
 }: TProps) => {
   return (
     <div className="mb-4 flex justify-between items-center">
-      <Button>
-        <PlusCircle className="mr-2 h-4 w-4 text-emerald-500" /> Add Product
-      </Button>
+      <Dialog>
+        <DialogTrigger>
+          <Button>
+            <PlusCircle className="mr-2 h-4 w-4 text-emerald-500" /> Add Product
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="w-[900px]">
+          <DialogHeader>
+            <DialogTitle>Create New Product</DialogTitle>
+          </DialogHeader>
+          <FormManageProduct
+            isLoading={isCreating}
+            titleSubmit="Create New Product"
+            onSave={handleCreateProduct}
+          />
+        </DialogContent>
+      </Dialog>
+
       <div className="flex gap-2">
         <Input
           placeholder="Search products..."
           value={search}
-          onChange={handleSearchChange}
+          onChangeCapture={handleSearchChange}
           className="max-w-xs"
         />
         <Select value={category} onValueChange={handleCategoryChange}>
@@ -83,4 +105,4 @@ const FilterProducts = ({
   );
 };
 
-export default FilterProducts;
+export default memo(FilterProducts);

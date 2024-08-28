@@ -13,18 +13,62 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Pencil, Trash2, Eye } from "lucide-react";
+import { Pencil, Trash2, Eye, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { IProductsTypes } from "@/interface";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import FormManageProduct from "./Form/FormManageProduct/FormManageProduct";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type TProps = {
   isLoading: boolean;
-  products: IProductsTypes[] | undefined
+  isUpdating: boolean;
+  products: IProductsTypes[] | undefined;
+  handleRemoveProduct: (id: string) => void;
+  handleUpdateProduct: ({
+    productData,
+    id,
+  }: {
+    productData: FormData;
+    id: string;
+  }) => void;
 };
 
-const ProductsTable = ({ isLoading, products }: TProps) => {
+const ProductsTable = ({
+  products,
+  isLoading,
+  isUpdating,
+  handleRemoveProduct,
+  handleUpdateProduct,
+}: TProps) => {
+  const { push } = useRouter();
+  const [isRemoving, setIsRemoving] = useState(false);
+  const removeProduct = async (id: string) => {
+    setIsRemoving(true);
+    handleRemoveProduct(id);
+    setIsRemoving(false);
+  };
   return (
     <Table>
       <TableHeader>
@@ -94,51 +138,77 @@ const ProductsTable = ({ isLoading, products }: TProps) => {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          // onClick={() => handleEditProduct(product)}
-                        >
-                          <Pencil className="h-4 w-4 text-amber-500" />
-                          <span className="sr-only">Edit</span>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Edit Product</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          // onClick={() => handleDeleteProduct(product)}
-                        >
+                  <Dialog>
+                    <DialogTrigger>
+                      <Button variant="ghost" size="icon">
+                        <Pencil className="h-4 w-4 text-amber-500" />
+                        <span className="sr-only">Edit</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="w-[900px]">
+                      <DialogHeader>
+                        <DialogTitle>Create New Product</DialogTitle>
+                      </DialogHeader>
+                      <FormManageProduct
+                        isLoading={isUpdating}
+                        titleSubmit="Save Changes"
+                        defaultValues={product}
+                        onSave={(productData) =>
+                          handleUpdateProduct({ productData, id: product._id })
+                        }
+                      />
+                    </DialogContent>
+                  </Dialog>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger>
+                      <Button variant="ghost" size="icon">
+                        {isRemoving ? (
+                          <Loader2 className="animate-spin  h-4 w-4 " />
+                        ) : (
                           <Trash2 className="h-4 w-4 text-red-500" />
-                          <span className="sr-only">Delete</span>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Delete Product</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                        )}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete your account and remove your data from our
+                          servers.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          className=" bg-red-500 hover:bg-red-400"
+                          onClick={() => removeProduct(product._id)}
+                        >
+                          {isRemoving ? (
+                            <div className="flex flex-row items-center">
+                              <Loader2 className="animate-spin mr-2 h-4 w-4 " />
+                              <span>Removing...</span>
+                            </div>
+                          ) : (
+                            "Continue"
+                          )}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          // onClick={() => handleViewProductDetails(product)}
-                        >
-                          <Eye className="h-4 w-4 text-purple-600" />
-                          <span className="sr-only">View Details</span>
-                        </Button>
+                        <Link href={`/dashboard/products/${product._id}`}>
+                          <Button variant="ghost" size="icon">
+                            <Eye className="h-4 w-4 text-purple-600" />
+                            <span className="sr-only">View Details</span>
+                          </Button>
+                        </Link>
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>Show Details</p>

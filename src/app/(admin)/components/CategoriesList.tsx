@@ -50,12 +50,12 @@ import LottieHandler from "@/components/Feedback/Lottiefiles/LottieHandler";
 interface TProps extends TResCategoriesAdmin {
   isUpdating: boolean;
   isDeleting: boolean;
-  handleDeleteCagegory: (id: number) => void;
+  handleDeleteCagegory: (id: string) => void;
   handleEditCategory: ({
     id,
     formData,
   }: {
-    id: number;
+    id: string;
     formData: FormData;
   }) => void;
 }

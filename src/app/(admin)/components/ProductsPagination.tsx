@@ -1,34 +1,37 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
-type TProps = {
+interface PaginationControlsProps {
   page: number | undefined;
-  totalPages: number | undefined;
-  handlePageChange: (newPage: number) => void;
-};
+  totalPages: number;
+  totalProducts:number | undefined;
+  onPageChange: (newPage: number) => void;
+}
 
-const ProductsPagination = ({ page, totalPages, handlePageChange }: TProps) => {
+function ProductsPagination({
+  page,
+  totalPages,
+  onPageChange,
+  totalProducts
+}: PaginationControlsProps) {
   return (
-    <div className="join  items-center flex flex-row  gap-3">
-      <Button
-        size={"icon"}
-        className="join-item"
-        onClick={() => handlePageChange((page ?? 1) - 1)}
-        disabled={page === 1}
-      >
-        <ArrowLeft />
+    <div className="flex justify-between mt-4">
+      <Button disabled={page === 1} onClick={() => onPageChange((page ?? 1) - 1)}>
+        <ChevronLeft className="mr-2 h-4 w-4" />
+        Previous
       </Button>
-      <Button className="join-item">Page {page}</Button>
+      <Badge variant={"outline"}>Total Products: {totalProducts}</Badge>
       <Button
-        size={"icon"}
-        className="join-item"
-        onClick={() => handlePageChange((page ?? 1) + 1)}
         disabled={page === totalPages}
+        onClick={() => onPageChange((page ?? 1) + 1)}
       >
-        <ArrowRight />
+        Next
+        <ChevronRight className="ml-2 h-4 w-4" />
       </Button>
     </div>
   );
-};
+}
 
 export default ProductsPagination;

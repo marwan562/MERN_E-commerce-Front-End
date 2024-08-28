@@ -52,7 +52,7 @@ export default function OrdersContent() {
     try {
       await updateOrder({ orderId, status: "Cancelled", token }).unwrap();
       toast.success("Cancelled Order Successfully.");
-      refetch()
+      refetch();
     } catch (error) {
       console.error("Failed to cancel order:", error);
     }
@@ -64,7 +64,7 @@ export default function OrdersContent() {
         <CardHeader>
           <CardTitle>Orders</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className=" space-y-2">
           <div className="flex items-center space-x-2">
             <Input
               type="text"
@@ -92,20 +92,20 @@ export default function OrdersContent() {
               </SelectContent>
             </Select>
           </div>
+          <OrderTable
+            orders={data?.orders || []}
+            isLoading={isLoading}
+            isFetching={isFetching}
+            handleStatusChange={handleStatusChange}
+            handleCancelOrder={handleCancelOrder}
+          />
+          <PaginationOrders
+            page={page}
+            totalPages={data?.pagination.totalPages || 1}
+            onPageChange={setPage}
+          />
         </CardContent>
       </Card>
-      <OrderTable
-        orders={data?.orders || []}
-        isLoading={isLoading}
-        isFetching={isFetching}
-        handleStatusChange={handleStatusChange}
-        handleCancelOrder={handleCancelOrder}
-      />
-      <PaginationOrders
-        page={page}
-        totalPages={data?.pagination.totalPages || 1}
-        onPageChange={setPage}
-      />
     </div>
   );
 }

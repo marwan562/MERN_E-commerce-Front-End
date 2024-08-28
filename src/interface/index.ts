@@ -1,5 +1,5 @@
 export interface IProductsTypes {
-  _id: number;
+  _id: string;
   title: string;
   price: number;
   category: ICategoriesTypes;
@@ -11,14 +11,14 @@ export interface IProductsTypes {
 }
 
 export type TResCategoriesAdmin = {
-  _id: number;
+  _id: string;
   title: string;
   img: string;
   products: IProductsTypes[];
 };
 
 export interface ICategoriesTypes {
-  _id: number;
+  _id: string;
   title: string;
   img: string;
 }

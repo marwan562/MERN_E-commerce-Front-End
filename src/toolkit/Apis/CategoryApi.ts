@@ -9,11 +9,11 @@ export const categoryApi = createApi({
   reducerPath: "categoryApi",
   baseQuery: fetchBaseQuery({ baseUrl: process.env.BASE_URL }),
   tagTypes: ["Category"],
+  refetchOnMountOrArgChange:true,
   endpoints: (build) => ({
     getAllCategories: build.query<TResCategoriesAdmin[], void>({
       query: () => `/admin-dashboard/categories`,
-      providesTags: (result) =>
-        result ? [{ type: "Category", id: "LIST" }] : [],
+    providesTags:["Category"],
     }),
     createCategory: build.mutation<
       TResCategoriesAdmin,
@@ -45,7 +45,7 @@ export const categoryApi = createApi({
     }),
     updateCategory: build.mutation<
       TResCategoriesAdmin,
-      { token: string | null; id: number; formData: FormData }
+      { token: string | null; id: string; formData: FormData }
     >({
       query: ({ token, id, formData }) => ({
         url: `/admin-dashboard/updateCategory/${id}`,
@@ -59,7 +59,7 @@ export const categoryApi = createApi({
     }),
     removeCategory: build.mutation<
       ICategoriesTypes,
-      { token: string | null; id: number }
+      { token: string | null; id: string }
     >({
       query: ({ id, token }) => ({
         url: `/admin-dashboard/deleteCategory/${id}`,

@@ -39,6 +39,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Edit, LoaderCircle, MoveHorizontal, Trash2 } from "lucide-react";
 import { IProductsTypes, TResCategoriesAdmin } from "@/interface";
 import { Button } from "@/components/ui/button";
@@ -80,7 +82,8 @@ const CategoriesList = (props: TProps) => {
           <TableHeader>
             <TableRow>
               <TableHead>Product</TableHead>
-              <TableHead>Price</TableHead>
+              <TableHead className="">Price</TableHead>
+              <TableHead>Image</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
@@ -89,19 +92,26 @@ const CategoriesList = (props: TProps) => {
           <TableBody>
             {products.length > 0 &&
               products.map((product) => (
-                <TableRow key={product._id}>
+                <TableRow key={product._id} className="group">
                   <TableCell className="font-medium">{product.title}</TableCell>
                   <TableCell>${product.price.toFixed(2)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
+                          className="group-hover:border border-black  rounded-full m-1"
                           aria-haspopup="true"
                           size="icon"
                           variant="ghost"
                         >
-                          <MoveHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
+                          <Avatar>
+                            <AvatarImage
+                              className=" object-cover"
+                              src={product.img}
+                              alt="@shadcn"
+                            />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

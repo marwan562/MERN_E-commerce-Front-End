@@ -109,3 +109,13 @@ export interface TResMyOrder {
     pageSize: number;
   };
 }
+
+export type TResProducts = {
+  products: IProductsTypes[];
+  pagination: {
+    totalProducts: number;
+    totalPages: number;
+    page: number;
+    pageSize: number;
+  };
+};

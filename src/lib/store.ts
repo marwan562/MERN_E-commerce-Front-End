@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { orderApi } from "@/toolkit/Apis/OrderApi";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { categoryApi } from "@/toolkit/Apis/CategoryApi";
+import { productApi } from "@/toolkit/Apis/ProductApi";
 
 const rootPersistConfig = {
   key: "root",
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   network: networkSlice,
   [orderApi.reducerPath]: orderApi.reducer,
   [categoryApi.reducerPath]: categoryApi.reducer,
+  [productApi.reducerPath]: productApi.reducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
@@ -60,7 +62,11 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(orderApi.middleware, categoryApi.middleware),
+    }).concat(
+      orderApi.middleware,
+      categoryApi.middleware,
+      productApi.middleware
+    ),
   devTools: process.env.NODE_ENV !== "production",
 });
 

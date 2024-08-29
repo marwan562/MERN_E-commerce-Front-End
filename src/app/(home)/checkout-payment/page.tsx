@@ -17,7 +17,10 @@ const CheckoutPayment = () => {
   const status = searchParams.get("status") as TStatusOrder;
   const [token, setToken] = useState<string | null>(null);
 
-  const { data, isLoading, error } = useGetOrderByIdQuery({ orderId, token });
+  const { data, isLoading, error } = useGetOrderByIdQuery(
+    { orderId, token },
+    { skip: !token }
+  );
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -57,8 +60,7 @@ const CheckoutPayment = () => {
             Button={
               <Link href={`/myOrders/${data._id}`} className=" space-x-2">
                 <Button className="bg-green-700 ">
-                  {" "}
-                  <GoalIcon  /> Show You{"'"}r Order
+                  <GoalIcon /> Show You{"'"}r Order
                 </Button>
               </Link>
             }

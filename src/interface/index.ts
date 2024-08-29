@@ -119,3 +119,22 @@ export type TResProducts = {
     pageSize: number;
   };
 };
+
+export interface IProductStat {
+  _id: string;
+  productId: string;
+  year: number;
+  monthlyData: TDaysData[];
+  dailyData: TDaysData[];
+  yearlySalesTotal: number;
+  yearlyTotalSold: number;
+  __v: number;
+}
+
+export type TDaysData = {
+  date?: Date;
+  salesTotal: number;
+  totalSold: number;
+  _id: string;
+  month?: string;
+};

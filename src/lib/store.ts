@@ -19,6 +19,7 @@ import { orderApi } from "@/toolkit/Apis/OrderApi";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { categoryApi } from "@/toolkit/Apis/CategoryApi";
 import { productApi } from "@/toolkit/Apis/ProductApi";
+import { productStatApi } from "@/toolkit/Apis/ProductStatApi";
 
 const rootPersistConfig = {
   key: "root",
@@ -51,6 +52,7 @@ const rootReducer = combineReducers({
   [orderApi.reducerPath]: orderApi.reducer,
   [categoryApi.reducerPath]: categoryApi.reducer,
   [productApi.reducerPath]: productApi.reducer,
+  [productStatApi.reducerPath]: productStatApi.reducer,
 });
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
@@ -65,7 +67,8 @@ const store = configureStore({
     }).concat(
       orderApi.middleware,
       categoryApi.middleware,
-      productApi.middleware
+      productApi.middleware,
+      productStatApi.middleware
     ),
   devTools: process.env.NODE_ENV !== "production",
 });

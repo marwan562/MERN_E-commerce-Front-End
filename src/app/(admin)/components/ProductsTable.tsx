@@ -13,7 +13,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Pencil, Trash2, Eye, Loader2 } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  Eye,
+  Loader2,
+  ChartArea,
+  ChartSpline,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -79,7 +86,9 @@ const ProductsTable = ({
           <TableHead>Category</TableHead>
           <TableHead>Stock</TableHead>
           <TableHead>Role</TableHead>
-          <TableHead>Actions</TableHead>
+          <TableHead className="flex flex-row justify-center items-center">
+            Actions
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -137,7 +146,7 @@ const ProductsTable = ({
                     {product.role || "None"}
                   </span>
                 </TableCell>
-                <TableCell>
+                <TableCell className=" grid gap-1 grid-cols-2 md:grid-cols-4 place-items-start justify-start">
                   <Dialog>
                     <DialogTrigger>
                       <Button variant="ghost" size="icon">
@@ -212,6 +221,21 @@ const ProductsTable = ({
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>Show Details</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link href={`/dashboard/products-stats/${product._id}`}>
+                          <Button variant="ghost" size="icon">
+                            <ChartSpline className="h-4 w-4 text-green-600" />
+                            <span className="sr-only">Product Stats</span>
+                          </Button>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Product Stats</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

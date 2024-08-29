@@ -26,9 +26,8 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Determine initial activeNav based on the current URL path
   const getInitialNav = (): NavItem => {
-    const path = pathname.split("/")[2]; // Assuming the path structure is /dashboard/{navItem}
+    const path = pathname.split("/")[2]; 
     return (path as NavItem) || "overview";
   };
 
@@ -38,7 +37,7 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     setActiveNav(getInitialNav());
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ pathname]); // Update activeNav when the pathname changes
+  }, [ pathname]);
 
   const handleNavClick = useCallback((item: NavItem) => {
     setActiveNav(item);

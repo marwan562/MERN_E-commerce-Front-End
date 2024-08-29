@@ -23,6 +23,7 @@ import { actAddCartItem } from "@/toolkit/Cart/act/addCartItem";
 import { IProductsTypes } from "@/interface";
 import { actDeleteItem } from "@/toolkit/Cart/act/actDeleteItem";
 import { actUpdateItem } from "@/toolkit/Cart/act/actUpdateItem";
+import LottieHandler from "../Feedback/Lottiefiles/LottieHandler";
 
 const NavCart = () => {
   const dispatch = useAppDispatch();
@@ -50,11 +51,11 @@ const NavCart = () => {
       })
     );
   };
-  const removeItemHanle = async (productId: number) => {
+  const removeItemHanle = async (productId: string) => {
     const token = await getToken();
     await dispatch(actDeleteItem({ productId, token }));
   };
-  const decrementItemHandle = async (productId: number) => {
+  const decrementItemHandle = async (productId: string) => {
     const token = await getToken();
     await dispatch(actUpdateItem({ productId, token }));
   };
@@ -171,14 +172,25 @@ const NavCart = () => {
                   );
                 })
               ) : (
-                <div>You don{"'"}t have any product</div>
+                <LottieHandler
+                  type="cartEmpty"
+                  colorMessage=" text-md "
+                  Button={
+                    <Link href={"/categories"}>
+                      <Button className=" bg-red-500 hover:bg-red-400">
+                        Go To Shopping
+                      </Button>
+                    </Link>
+                  }
+                  className=" flex flex-col items-center  justify-center h-[50vh]"
+                />
               )}
               {cartItems.length > 0 ? (
-                  <Link href={"/checkout-order"}>
-                <Button className="w-full mt-2">
+                <Link href={"/checkout-order"}>
+                  <Button className="w-full mt-2">
                     Order Now ${totalPrice.toFixed(2)}
-                </Button>
-                  </Link>
+                  </Button>
+                </Link>
               ) : null}
             </div>
           </div>

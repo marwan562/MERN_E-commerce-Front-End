@@ -1,17 +1,7 @@
 import { TResProducts } from "@/interface";
 import { fetchBaseQuery, createApi } from "@reduxjs/toolkit/query/react";
 
-// Define the types for the create and update product payloads
-type TCreateProduct = {
-  title: string;
-  price: number;
-  categoryIds: string[]; // Array of category IDs
-  img: string;
-  stock: number;
-  role: "New" | "Sale" | "";
-};
 
-type TUpdateProduct = TCreateProduct & { id: string };
 
 type TPropsProducts = {
   token: string | null;

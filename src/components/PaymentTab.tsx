@@ -21,13 +21,11 @@ const PaymentTab = () => {
   const { getToken } = useAuth();
   const dispatch = useAppDispatch();
   const navigate = useRouter();
-  const [isLoading, setIsLoading] = useState(false)
-  const [createOrder] = useCreateOrderMutation();
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
   const { cartItems } = useAppSelector((state) => state.cart);
   const { user } = useAppSelector((state) => state.auth);
 
   const handleCreateOrder = async (fromCheckout: TFormPaymentCard) => {
-    setIsLoading(true)
     const token = await getToken();
 
     if (!token) {
@@ -56,13 +54,11 @@ const PaymentTab = () => {
 
     try {
       const data = await createOrder({ order, token }).unwrap();
-      dispatch(cleanCartItemsAction());
-      toast.success("Order Created Successfully");
+       dispatch(cleanCartItemsAction())
       navigate.push(`/checkout-payment?orderId=${data._id}&status=Pending`);
-      setIsLoading(false)
+      toast.success("Order Created Successfully");
     } catch (err) {
       toast.error("Error in server ");
-      setIsLoading(false)
     }
   };
   return (

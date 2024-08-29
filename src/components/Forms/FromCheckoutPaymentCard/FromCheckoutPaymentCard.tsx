@@ -22,7 +22,7 @@ import {
   checkoutSchema,
   TFormPaymentCard,
 } from "../validations/checkoutSchemaCardPayment";
-import { Loader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 type TProps = {
   user?: User | null;
@@ -102,7 +102,14 @@ export default function FromCheckoutPaymentCard({
               <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <AlertDialogTrigger asChild>
                   <Button type="button" onClick={handleDialogOpen}>
-                    Payment Order
+                    {isLoading ? (
+                      <span className={"flex items-center gap-2"}>
+                        <Loader2 className=" animate-spin  text-white" /> Check
+                        Order...
+                      </span>
+                    ) : (
+                      "Payment Order"
+                    )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -123,7 +130,7 @@ export default function FromCheckoutPaymentCard({
                     <AlertDialogAction type="button" onClick={handleConfirm}>
                       {isLoading ? (
                         <span className={"flex items-center gap-2"}>
-                          <Loader className=" animate-spin  text-white" /> Check
+                          <Loader2 className=" animate-spin  text-white" /> Check
                           Payment...
                         </span>
                       ) : (
@@ -140,14 +147,15 @@ export default function FromCheckoutPaymentCard({
             </Button>
           )
         ) : (
-          <Button onClick={handleContinue}>{isLoading ? (
-            <span className={"flex items-center gap-2"}>
-              <Loader className=" animate-spin  text-white" /> Check
-              Order...
-            </span>
-          ) : (
-            "Continue"
-          )}</Button>
+          <Button onClick={handleContinue}>
+            {isLoading ? (
+              <span className={"flex items-center gap-2"}>
+                <Loader2 className=" animate-spin  text-white" /> Check Order...
+              </span>
+            ) : (
+              "Continue"
+            )}
+          </Button>
         )}
       </form>
     </Form>

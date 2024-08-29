@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 type TProps = {
   token: string | null;
-  productId: number;
+  productId: string;
   quantity?: number;
 };
 
@@ -21,7 +21,7 @@ export const actAddCartItem = createAsyncThunk(
             Authorization: `Bearer ${token}`,
             mode: "cors",
           },
-          body: JSON.stringify({productId}),
+          body: JSON.stringify({ productId }),
         }
       );
 

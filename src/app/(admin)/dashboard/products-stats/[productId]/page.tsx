@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   LineChart,
   Line,
@@ -27,30 +27,30 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
-} from "recharts"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "recharts";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   BarChart3,
   Calendar,
   DollarSign,
   Package,
   ShoppingCart,
-} from "lucide-react"
-import { useAuthToken } from "@/hooks/useAuthToken"
-import { useGetProductStatByIdQuery } from "@/toolkit/Apis/ProductStatApi"
+} from "lucide-react";
+import { useAuthToken } from "@/hooks/useAuthToken";
+import { useGetProductStatByIdQuery } from "@/toolkit/Apis/ProductStatApi";
 
 export default function ProductStatCharts({
   params,
 }: {
-  params: { productId: string }
+  params: { productId: string };
 }) {
-  const token = useAuthToken()
-  const [selectedMonth, setSelectedMonth] = useState<string>("Jun")
+  const token = useAuthToken();
+  const [selectedMonth, setSelectedMonth] = useState<string>("Jun");
 
   const { data: productStat, isLoading } = useGetProductStatByIdQuery(
     { token, id: params.productId },
     { skip: !token }
-  )
+  );
 
   if (isLoading) {
     return (
@@ -63,24 +63,24 @@ export default function ProductStatCharts({
           <Skeleton className="h-[400px] w-full" />
         </CardContent>
       </Card>
-    )
+    );
   }
 
   if (!productStat) {
-    return <div>No data available</div>
+    return <div>No data available</div>;
   }
 
   const yearlyData = [
     { name: "Yearly Sales Total", value: productStat.yearlySalesTotal },
     { name: "Yearly Total Sold", value: productStat.yearlyTotalSold },
-  ]
+  ];
 
   const filteredDailyData = productStat.dailyData.filter((data) => {
     const dataMonth = new Date(data.date).toLocaleString("default", {
       month: "short",
-    })
-    return dataMonth === selectedMonth
-  })
+    });
+    return dataMonth === selectedMonth;
+  });
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -93,10 +93,10 @@ export default function ProductStatCharts({
             </p>
           ))}
         </div>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <Card className="w-full">
@@ -179,7 +179,7 @@ export default function ProductStatCharts({
                 </SelectTrigger>
                 <SelectContent>
                   {productStat.monthlyData.map((data) => (
-                    <SelectItem key={data.month} value={data.month}>
+                    <SelectItem key={data.month} value={data?.month}>
                       {data.month}
                     </SelectItem>
                   ))}
@@ -240,5 +240,5 @@ export default function ProductStatCharts({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

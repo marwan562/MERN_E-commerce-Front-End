@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -37,84 +37,42 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useGetProductStatsByCategoryIdQuery } from "@/toolkit/Apis/ProductStatApi";
+import { useGetAllCategoriesQuery } from "@/toolkit/Apis/CategoryApi";
+import { useAuthToken } from "@/hooks/useAuthToken";
 
-interface ProductStat {
-  productId: string;
-  productName: string;
-  year: number;
-  monthlyData: { month: string; salesTotal: number; totalSold: number }[];
-  dailyData: { date: string; salesTotal: number; totalSold: number }[];
-  yearlySalesTotal: number;
-  yearlyTotalSold: number;
-}
-
-const mockData: ProductStat[] = [
-  {
-    productId: "1",
-    productName: "Laptop",
-    year: 2023,
-    monthlyData: [
-      { month: "Jan", salesTotal: 10000, totalSold: 50 },
-      { month: "Feb", salesTotal: 12000, totalSold: 60 },
-      { month: "Mar", salesTotal: 15000, totalSold: 75 },
-      { month: "Apr", salesTotal: 13000, totalSold: 65 },
-      { month: "May", salesTotal: 17000, totalSold: 85 },
-      { month: "Jun", salesTotal: 16000, totalSold: 80 },
-    ],
-    dailyData: [
-      { date: "2023-06-01", salesTotal: 1000, totalSold: 5 },
-      { date: "2023-06-02", salesTotal: 1500, totalSold: 7 },
-      { date: "2023-06-03", salesTotal: 2000, totalSold: 10 },
-      { date: "2023-06-04", salesTotal: 1800, totalSold: 9 },
-      { date: "2023-06-05", salesTotal: 2200, totalSold: 11 },
-      { date: "2023-06-06", salesTotal: 1900, totalSold: 9 },
-      { date: "2023-06-07", salesTotal: 2100, totalSold: 10 },
-    ],
-    yearlySalesTotal: 150000,
-    yearlyTotalSold: 750,
-  },
-  {
-    productId: "2",
-    productName: "Smartphone",
-    year: 2023,
-    monthlyData: [
-      { month: "Jan", salesTotal: 8000, totalSold: 100 },
-      { month: "Feb", salesTotal: 9500, totalSold: 120 },
-      { month: "Mar", salesTotal: 11000, totalSold: 140 },
-      { month: "Apr", salesTotal: 10000, totalSold: 130 },
-      { month: "May", salesTotal: 12500, totalSold: 160 },
-      { month: "Jun", salesTotal: 12000, totalSold: 150 },
-    ],
-    dailyData: [
-      { date: "2023-06-01", salesTotal: 800, totalSold: 10 },
-      { date: "2023-06-02", salesTotal: 1200, totalSold: 15 },
-      { date: "2023-06-03", salesTotal: 1500, totalSold: 20 },
-      { date: "2023-06-04", salesTotal: 1300, totalSold: 17 },
-      { date: "2023-06-05", salesTotal: 1700, totalSold: 22 },
-      { date: "2023-06-06", salesTotal: 1400, totalSold: 18 },
-      { date: "2023-06-07", salesTotal: 1600, totalSold: 21 },
-    ],
-    yearlySalesTotal: 120000,
-    yearlyTotalSold: 1500,
-  },
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 export default function AllProductsStatCharts() {
-  const [productStats, setProductStats] = useState<ProductStat[] | null>(null);
-  const [selectedProduct, setSelectedProduct] = useState<string>("");
-  const [selectedMonth, setSelectedMonth] = useState<string>("Jun");
-  const [loading, setLoading] = useState(true);
+  const token = useAuthToken();
+  const { data: categories } = useGetAllCategoriesQuery(undefined, {
+    skip: !token,
+  });
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [selectedMonth, setSelectedMonth] = useState<string>("August");
 
-  useEffect(() => {
-    // Simulating API call
-    setTimeout(() => {
-      setProductStats(mockData);
-      setSelectedProduct(mockData[0].productId);
-      setLoading(false);
-    }, 1500);
-  }, []);
+  const { data: productStats, isLoading } = useGetProductStatsByCategoryIdQuery(
+    {
+      token,
+      categoryId: selectedCategoryId,
+    },
+    { skip: !token || !selectedCategoryId }
+  );
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Card className="w-full mx-auto">
         <CardHeader>
@@ -128,26 +86,41 @@ export default function AllProductsStatCharts() {
     );
   }
 
-  if (!productStats) {
-    return <div>Error loading data</div>;
+  if (!categories || categories.length === 0) {
+    return <div>No categories available</div>;
   }
 
-  const selectedProductData = productStats.find(
-    (p) => p.productId === selectedProduct
-  );
-
-  if (!selectedProductData) {
-    return <div>No product selected</div>;
+  if (!selectedCategoryId && categories.length > 0) {
+    setSelectedCategoryId(categories[0]._id);
   }
 
-  const yearlyData = productStats.map((product) => ({
-    name: product.productName,
+  const yearlyData = productStats?.map((product) => ({
+    name: product.productId.title,
     salesTotal: product.yearlySalesTotal,
     totalSold: product.yearlyTotalSold,
   }));
 
-  const filteredDailyData = selectedProductData.dailyData.filter((data) => {
-    const dataMonth = new Date(data.date).toLocaleString("default", {
+  const allMonthlyData = productStats?.flatMap((product) =>
+    product.monthlyData.map((data) => ({
+      ...data,
+      productName: product.productId.title,
+    }))
+  );
+
+  const monthlyDataByProduct = productStats?.map((product) => ({
+    name: product.productId.title,
+    data: product.monthlyData,
+  }));
+
+  const allDailyData = productStats?.flatMap((product) =>
+    product.dailyData.map((data) => ({
+      ...data,
+      productName: product.productId.title,
+    }))
+  );
+
+  const filteredDailyData = allDailyData?.filter((data) => {
+    const dataMonth = new Date(data.date as Date).toLocaleString("default", {
       month: "short",
     });
     return dataMonth === selectedMonth;
@@ -174,9 +147,7 @@ export default function AllProductsStatCharts() {
       <CardHeader>
         <div className="flex items-center space-x-2">
           <Package className="h-6 w-6 text-primary" />
-          <CardTitle>
-            All Products Statistics for {selectedProductData.year}
-          </CardTitle>
+          <CardTitle>All Products Statistics for 2024</CardTitle>
         </div>
         <CardDescription>
           View yearly, monthly, and daily sales data for all products
@@ -184,14 +155,17 @@ export default function AllProductsStatCharts() {
       </CardHeader>
       <CardContent>
         <div className="mb-4">
-          <Select onValueChange={setSelectedProduct} value={selectedProduct}>
+          <Select
+            onValueChange={setSelectedCategoryId}
+            value={selectedCategoryId}
+          >
             <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Select a product" />
+              <SelectValue placeholder="Select a category" />
             </SelectTrigger>
             <SelectContent>
-              {productStats.map((product) => (
-                <SelectItem key={product.productId} value={product.productId}>
-                  {product.productName}
+              {categories.map((category) => (
+                <SelectItem key={category._id} value={category._id}>
+                  {category.title}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -232,29 +206,25 @@ export default function AllProductsStatCharts() {
           </TabsContent>
           <TabsContent value="monthly">
             <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={selectedProductData.monthlyData}>
+              <LineChart data={allMonthlyData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis yAxisId="left" />
                 <YAxis yAxisId="right" orientation="right" />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
-                <Line
-                  yAxisId="left"
-                  type="monotone"
-                  dataKey="salesTotal"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                  name="Sales Total"
-                />
-                <Line
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="totalSold"
-                  stroke="#82ca9d"
-                  activeDot={{ r: 8 }}
-                  name="Total Sold"
-                />
+                {monthlyDataByProduct?.map((product, index) => (
+                  <Line
+                    key={product.name}
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="salesTotal"
+                    data={product.data}
+                    name={`${product.name} Sales`}
+                    stroke={`hsl(${index * 30}, 70%, 50%)`}
+                    activeDot={{ r: 8 }}
+                  />
+                ))}
               </LineChart>
             </ResponsiveContainer>
           </TabsContent>
@@ -265,9 +235,9 @@ export default function AllProductsStatCharts() {
                   <SelectValue placeholder="Select a month" />
                 </SelectTrigger>
                 <SelectContent>
-                  {selectedProductData.monthlyData.map((data) => (
-                    <SelectItem key={data.month} value={data.month}>
-                      {data.month}
+                  {months.map((month) => (
+                    <SelectItem key={month} value={month}>
+                      {month}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -309,7 +279,10 @@ export default function AllProductsStatCharts() {
                 <span className="text-sm font-medium">Total Sales</span>
               </div>
               <span className="text-2xl font-bold">
-                ${selectedProductData.yearlySalesTotal.toLocaleString()}
+                $
+                {yearlyData
+                  ?.reduce((sum, product) => sum + product.salesTotal, 0)
+                  .toLocaleString()}
               </span>
             </CardContent>
           </Card>
@@ -320,7 +293,9 @@ export default function AllProductsStatCharts() {
                 <span className="text-sm font-medium">Total Sold</span>
               </div>
               <span className="text-2xl font-bold">
-                {selectedProductData.yearlyTotalSold.toLocaleString()}
+                {yearlyData
+                  ?.reduce((sum, product) => sum + product.totalSold, 0)
+                  .toLocaleString()}
               </span>
             </CardContent>
           </Card>

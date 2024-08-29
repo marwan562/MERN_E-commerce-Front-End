@@ -190,8 +190,8 @@ export default function AllProductsStatCharts() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="yearly">
-            <ScrollArea className="h-[400px]">
-              <ResponsiveContainer width="100%" height={400}>
+            <ScrollArea className="h-[200px]">
+              <ResponsiveContainer  width="100%" height={200}>
                 <BarChart data={yearlyData} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" />

@@ -1,128 +1,131 @@
-"use client"
-import React, { useState, useCallback } from 'react'
-import { LayoutDashboard, ShoppingCart, Package, Users, List, Menu, Bell, Search } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import AllProductsStatCharts from "./products-stats/page";
+import { auth } from "@clerk/nextjs/server";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+  BadgeDollarSign,
+  DollarSign,
+  ShoppingBagIcon,
+  Users,
+} from "lucide-react";
 
+type TRestOverView = {
+  totalUsers: number;
+  totalOrders: number;
+  totalPriceOrders: number;
+};
 
+const getOverView = async (
+  token: string | null
+): Promise<TRestOverView | null> => {
+  try {
+    const res = await fetch(
+      `${process.env.BASE_URL}/admin-dashboard/overview`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token ?? ""}`,
+        },
+        mode: "cors",
+      }
+    );
 
+    if (!res.ok) {
+      throw new Error(
+        `Server responded with status: ${res.status} ${res.statusText}`
+      );
+    }
 
-const OverviewContent = () => {return (
-  <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          className="h-4 w-4 text-muted-foreground"
-        >
-          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-        </svg>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">$45,231.89</div>
-        <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-      </CardContent>
-    </Card>
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          className="h-4 w-4 text-muted-foreground"
-        >
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">+2350</div>
-        <p className="text-xs text-muted-foreground">+180.1% from last month</p>
-      </CardContent>
-    </Card>
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Sales</CardTitle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          className="h-4 w-4 text-muted-foreground"
-        >
-          <rect width="20" height="14" x="2" y="5" rx="2" />
-          <path d="M2 10h20" />
-        </svg>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">+12,234</div>
-        <p className="text-xs text-muted-foreground">+19% from last month</p>
-      </CardContent>
-    </Card>
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          className="h-4 w-4 text-muted-foreground"
-        >
-          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-        </svg>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">+573</div>
-        <p className="text-xs text-muted-foreground">+201 since last hour</p>
-      </CardContent>
-    </Card>
-  </div>
-)
-}
+    return (await res.json()) as TRestOverView;
+  } catch (err) {
+    console.error("Failed to fetch overview:", err);
+    return null;
+  }
+};
 
-export default  OverviewContent
+const OverviewContent = async () => {
+  const { getToken } = auth();
+  const token = await getToken();
+  const overView = await getOverView(token);
 
+  return (
+    <div className=" max-h-screen grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+          <DollarSign />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            ${overView?.totalPriceOrders.toFixed(2)}
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+          <Users />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">+{overView?.totalUsers}</div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Order</CardTitle>
+          <ShoppingBagIcon />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{overView?.totalOrders}</div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Active Now</CardTitle>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            className="h-4 w-4 text-muted-foreground"
+          >
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">+573</div>
+          <p className="text-xs text-muted-foreground">+201 since last hour</p>
+        </CardContent>
+      </Card>
+      <div className=" col-span-2">
+        <AllProductsStatCharts />
+      </div>
+      {/* <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <ShoppingCart className="mr-2" />
+            Best Selling Products
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={productData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#8884d8" />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card> */}
+    </div>
+  );
+};
 
+export default OverviewContent;

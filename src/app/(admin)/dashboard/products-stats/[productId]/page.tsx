@@ -129,14 +129,14 @@ export default function ProductStatCharts({
             </TabsTrigger>
           </TabsList>
           <TabsContent value="yearly">
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="50%" height={400}>
               <BarChart data={yearlyData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
-                <Bar dataKey="value" fill="#8884d8" />
+                <Bar dataKey="value" fill="#777" />
               </BarChart>
             </ResponsiveContainer>
           </TabsContent>

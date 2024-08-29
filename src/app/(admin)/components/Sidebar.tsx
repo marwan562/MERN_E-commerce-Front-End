@@ -13,7 +13,7 @@ import {
 import { useAdminContext } from "../dashboard/context/useAdminContext";
 
 const navItems = [
-  { key: "/", icon: <LayoutDashboard size={20} />, label: "Overview" },
+  { key: "", icon: <LayoutDashboard size={20} />, label: "Overview" },
   { key: "orders", icon: <ShoppingCart size={20} />, label: "Orders" },
   { key: "products", icon: <Package size={20} />, label: "Products" },
   {

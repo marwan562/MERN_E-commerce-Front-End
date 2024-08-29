@@ -138,3 +138,13 @@ export type TDaysData = {
   _id: string;
   month?: string;
 };
+
+export type TResCustomers = {
+  customers: User[]
+  pagination: {
+    totalPages: number;
+    totalCustomers: number;
+    page: number;
+    pageSize: number;
+  };
+};

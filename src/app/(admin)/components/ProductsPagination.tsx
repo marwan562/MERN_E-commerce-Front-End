@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface PaginationControlsProps {
   page: number | undefined;
-  totalPages: number;
+  totalPages: number | undefined;
   totalProducts:number | undefined;
   onPageChange: (newPage: number) => void;
 }
@@ -22,7 +22,7 @@ function ProductsPagination({
         <ChevronLeft className="mr-2 h-4 w-4" />
         Previous
       </Button>
-      <Badge variant={"outline"}>Total Products: {totalProducts}</Badge>
+      <Badge variant={"outline"}>Total: {totalProducts}</Badge>
       <Button
         disabled={page === totalPages}
         onClick={() => onPageChange((page ?? 1) + 1)}

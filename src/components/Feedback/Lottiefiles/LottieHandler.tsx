@@ -1,3 +1,4 @@
+"use client"
 import { ReactNode } from "react";
 import Lottie from "lottie-react";
 import loadingCart from "./loading.json";

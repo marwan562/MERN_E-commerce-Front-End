@@ -93,7 +93,7 @@ const LogInUser = () => {
       ) : (
         <SignInButton mode="modal" fallbackRedirectUrl={"/auth-callback"}>
           <Button className="flex group items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-full shadow-md px-2 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-            <LogInIcon className=" size-[18px] mr-2 group-hover:animate-bounce" />
+            <LogInIcon className=" size-[18px] mr-2 group-hover:mr-2 duration-300 transform" />
             <span> Log In</span>
           </Button>
         </SignInButton>

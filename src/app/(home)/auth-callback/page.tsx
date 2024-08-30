@@ -46,10 +46,10 @@ const authCallback = async () => {
     }
   } catch (error) {
     console.error("Authentication error:", error);
-    return redirect("/internet");
+    return redirect("/error");
   }
 
-  return <LottieHandler type="loadingCart" message="Checking User..."/>;
+  return <LottieHandler type="loadingCart" message="Checking User.." />;
 };
 
 export default authCallback;

@@ -19,7 +19,15 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { ListOrderedIcon, EyeIcon, Edit2, Edit3, Trash } from "lucide-react";
+import {
+  ListOrderedIcon,
+  EyeIcon,
+  Edit2,
+  Edit3,
+  Trash,
+  LucideScanEye,
+  Trash2,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -38,14 +46,32 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   useGetAllCustomerQuery,
   useUpdateRoleCustomerMutation,
 } from "@/toolkit/Apis/CustomersApi";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useAuthToken } from "@/hooks/useAuthToken";
 import { useDebounce } from "use-debounce";
 import ProductsPagination from "../../components/ProductsPagination";
 import FormCustomer from "../../components/Form/FomrCustomer/FormCustomer";
 import { toast } from "sonner";
+import Link from "next/link";
 
 type TRoles = "user" | "admin" | "superAdmin";
 
@@ -197,9 +223,22 @@ export default function Component() {
             <CardFooter className=" flex flex-row items-center justify-between">
               <Dialog>
                 <DialogTrigger>
-                  <Button className="bg-green-600 hover:bg-green-400" size="sm">
-                    <Edit3 className="h-4 w-4" />
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button
+                          className="bg-green-600 hover:bg-green-400"
+                          size="sm"
+                        >
+                          <Edit3 className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className=" flex flex-row bg-green-400">
+                        <Edit3 className="mr-1 size-4" />
+                        <p>Edit Role Customer</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
@@ -220,13 +259,60 @@ export default function Component() {
                   />
                 </DialogContent>
               </Dialog>
-
-              <Button variant="destructive" size="sm">
-                <Trash className="h-4 w-4 " />
-              </Button>
-              <Button className="bg-purple-600 hover:bg-purple-400" size="sm">
-                <EyeIcon className="h-4 w-4 " />
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button variant="destructive" size="sm">
+                          <Trash className="h-4 w-4 " />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className=" flex flex-row bg-red-400">
+                        <Trash2 className="mr-1 size-4" />
+                        <p>Remoev The Customer</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>{" "}
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your Customer and remove your data from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction className=" bg-red-600  hover:bg-red-400">
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Link
+                      href={`/dashboard/orders/ordersCustomer/${customer._id}`}
+                    >
+                      <Button
+                        className="bg-purple-600 hover:bg-purple-400"
+                        size="sm"
+                      >
+                        <EyeIcon className="h-4 w-4 " />
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent className=" flex flex-row bg-purple-400">
+                    <LucideScanEye className="mr-1 size-4" />
+                    <p>Show Order This Customer</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardFooter>
           </Card>
         ))}

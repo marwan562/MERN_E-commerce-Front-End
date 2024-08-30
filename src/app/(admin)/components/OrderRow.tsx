@@ -13,8 +13,9 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Eye } from "lucide-react";
 import { IResOrder, TStatusOrder } from "@/interface";
 import { getStatusDetails } from "@/utils/getStatusOrder";
-import { format } from "date-fns"
+import { format } from "date-fns";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface OrderRowProps {
   order: IResOrder;
@@ -27,7 +28,6 @@ export function OrderRow({
   handleStatusChange,
   handleCancelOrder,
 }: OrderRowProps) {
-  const { push } = useRouter()
   return (
     <TableRow key={order._id}>
       <TableCell>{order._id}</TableCell>
@@ -50,18 +50,24 @@ export function OrderRow({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onSelect={() => push(`/dashboard/orders/${order._id}`)}>
-              <Eye className="mr-2 h-4 w-4" />
-              View details
-            </DropdownMenuItem>
+            <Link href={`/dashboard/orders/${order._id}`}>
+              <DropdownMenuItem>
+                <Eye className="mr-2 h-4 w-4" />
+                View details
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuSeparator />
             <DropdownMenuLabel>Change status</DropdownMenuLabel>
             {["Pending", "Processing", "Shipped", "Delivered"].map((status) => (
               <DropdownMenuItem
                 key={status}
-                onSelect={() => handleStatusChange(order._id, status as TStatusOrder)}
+                onSelect={() =>
+                  handleStatusChange(order._id, status as TStatusOrder)
+                }
               >
-                <Badge className={getStatusDetails(status as TStatusOrder).classes}>
+                <Badge
+                  className={getStatusDetails(status as TStatusOrder).classes}
+                >
                   {getStatusDetails(status as TStatusOrder).icon}
                   {status}
                 </Badge>

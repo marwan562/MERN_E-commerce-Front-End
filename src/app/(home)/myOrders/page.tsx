@@ -4,22 +4,25 @@ import React, { useEffect, useState } from "react";
 import MyOrdersList from "@/components/E-commerce/MyOrdersList";
 import FilterMyOrders from "@/components/FilterMyOrders";
 import OrdersPagination from "@/components/OrdersPagination";
-import { useGetMyOrdersQuery, useUpdateMyOrderMutation } from "@/toolkit/Apis/OrderApi";
+import {
+  useGetMyOrdersQuery,
+  useUpdateMyOrderMutation,
+} from "@/toolkit/Apis/OrderApi";
 import { TStatusOrder } from "@/interface";
 import LottieHandler from "@/components/Feedback/Lottiefiles/LottieHandler";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/lib/store";
 
 const MyOrders: React.FC = () => {
   const router = useRouter();
+  const { user } = useAppSelector((state) => state.auth);
   const [page, setPage] = useState<number>(1);
   const [status, setStatus] = useState<TStatusOrder | "">("");
   const [duration, setDuration] = useState<string>("this week");
   const [token, setToken] = useState<string | null>(null);
   const { getToken } = useAuth();
-
- 
 
   const [updateOrder] = useUpdateMyOrderMutation();
 
@@ -43,8 +46,8 @@ const MyOrders: React.FC = () => {
   }, [getToken]);
 
   const { data, isLoading, refetch } = useGetMyOrdersQuery(
-    { token, page, status, duration },
-    { skip: !token, pollingInterval:3000 }
+    { id: user?._id, token, page, status, duration },
+    { skip: !token, pollingInterval: 3000 }
   );
 
   if (!token && !isLoading) {
@@ -63,7 +66,10 @@ const MyOrders: React.FC = () => {
             My Orders
           </h2>
           {/* Filter orders by status and duration */}
-          <FilterMyOrders onStatusChange={setStatus} onDurationChange={setDuration} />
+          <FilterMyOrders
+            onStatusChange={setStatus}
+            onDurationChange={setDuration}
+          />
         </div>
 
         {!data?.orders.length && (
@@ -71,7 +77,10 @@ const MyOrders: React.FC = () => {
         )}
 
         {/* Display the list of orders */}
-        <MyOrdersList orders={data?.orders} handleCancelOrder={handleCancelOrder} />
+        <MyOrdersList
+          orders={data?.orders}
+          handleCancelOrder={handleCancelOrder}
+        />
 
         {/* Pagination Component */}
         <OrdersPagination

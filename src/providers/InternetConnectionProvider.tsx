@@ -6,12 +6,14 @@ import { getNetworkAction } from "@/toolkit/Network/networkSlice";
 import { Wifi, WifiOff } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 const InternetConnecationProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
-  const { network } = useAppSelector(({ network }) => network);
+  const { push } = useRouter();
+
   const dispatch = useAppDispatch();
-  const  addToastOffline = () => {
+  const addToastOffline = () => {
     toast({
       title: (
         <div className="flex items-center">
@@ -21,10 +23,10 @@ const InternetConnecationProvider = ({ children }: { children: ReactNode }) => {
       ),
       description: "Please make sure you'r internet connection.",
       action: <ToastAction altText="Goto schedule to undo">Ok</ToastAction>,
-      duration: 5000,
+      duration: 8000,
     });
-  }
-  
+  };
+
   function addToastOnline() {
     toast({
       title: (
@@ -35,7 +37,7 @@ const InternetConnecationProvider = ({ children }: { children: ReactNode }) => {
       ),
       description: "Please evry time check internet connection.",
       action: <ToastAction altText="Goto schedule to undo">Ok</ToastAction>,
-      duration: 5000,
+      duration: 8000,
     });
   }
 
@@ -43,6 +45,7 @@ const InternetConnecationProvider = ({ children }: { children: ReactNode }) => {
     window.addEventListener("offline", () => {
       addToastOffline();
       dispatch(getNetworkAction(false));
+      push("/internet");
     });
 
     window.addEventListener("online", () => {
@@ -58,8 +61,8 @@ const InternetConnecationProvider = ({ children }: { children: ReactNode }) => {
         dispatch(getNetworkAction(false));
       });
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   return <>{children}</>;
 };

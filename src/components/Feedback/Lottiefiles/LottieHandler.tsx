@@ -5,6 +5,7 @@ import paymentError from "./paymentError.json";
 import cartEmpty from "./cartEmpty.json";
 import pageNotFound from "./pageNotFound.json";
 import trackingTruck from "./trackingTruck.json";
+import internetOffline from "./internetOffline.json";
 import paymentSuccessfully from "./paymentSuccessfully.json";
 
 const lottieTypes = {
@@ -13,6 +14,7 @@ const lottieTypes = {
   paymentSuccessfully,
   cartEmpty,
   trackingTruck,
+  internetOffline,
   pageNotFound
 };
 

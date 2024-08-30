@@ -27,7 +27,7 @@ const Navbar = () => {
           />
           <ul className="hidden md:flex font-semibold items-center gap-5">
             <Button className={"  font-bold text-[15px]"} variant="link">
-              <Link href={"/"}> Home</Link>
+              <Link href={"/"}> HOME</Link>
             </Button>
           </ul>
           <NavigationMenu />

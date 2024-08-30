@@ -20,10 +20,7 @@ interface MyOrdersListProps {
   handleCancelOrder: (id: string) => void;
 }
 
-const MyOrdersList  = ({
-  orders,
-  handleCancelOrder,
-}:MyOrdersListProps) => {
+const MyOrdersList = ({ orders, handleCancelOrder }: MyOrdersListProps) => {
   const [isLoading, setIsLoading] = useState<string | null>(null);
 
   const updateOrder = async (id: string) => {
@@ -39,7 +36,7 @@ const MyOrdersList  = ({
 
   return (
     <div className="mt-6 flow-root sm:mt-8">
-      <div className="divide-y divide-gray-200 dark:divide-gray-700">
+      <div className="divide-y divide-gray-200 ">
         {orders?.map((order) => {
           const { classes, icon } = getStatusDetails(order.status);
 
@@ -50,7 +47,7 @@ const MyOrdersList  = ({
             >
               {/* Order ID */}
               <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
-                <dt className="text-base font-medium text-gray-500 dark:text-gray-400">
+                <dt className="text-base font-medium text-gray-500 ">
                   Order ID:
                 </dt>
                 <dd className="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
@@ -62,9 +59,7 @@ const MyOrdersList  = ({
 
               {/* Date */}
               <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
-                <dt className="text-base font-medium text-gray-500 dark:text-gray-400">
-                  Date:
-                </dt>
+                <dt className="text-base font-medium text-gray-500 ">Date:</dt>
                 <dd className="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
                   {new Date(order.createdAt).toLocaleDateString()}
                 </dd>
@@ -72,9 +67,7 @@ const MyOrdersList  = ({
 
               {/* Price */}
               <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
-                <dt className="text-base font-medium text-gray-500 dark:text-gray-400">
-                  Price:
-                </dt>
+                <dt className="text-base font-medium text-gray-500 ">Price:</dt>
                 <dd className="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
                   ${order.totalAmount.toFixed(2)}
                 </dd>
@@ -82,7 +75,7 @@ const MyOrdersList  = ({
 
               {/* Status */}
               <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
-                <dt className="text-base font-medium text-gray-500 dark:text-gray-400">
+                <dt className="text-base font-medium text-gray-500 ">
                   Status:
                 </dt>
                 <dd
@@ -138,7 +131,7 @@ const MyOrdersList  = ({
                 )}
                 <Link
                   href={`/myOrders/${order._id}`}
-                  className="w-full flex items-center gap-1 rounded-lg border border-gray-700 px-2  py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-500 dark:text-gray-500 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-900 lg:w-auto"
+                  className="w-full flex items-center gap-1 rounded-lg border border-gray-700 px-1  py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-500 dark:text-gray-500 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-900 lg:w-auto"
                 >
                   <Eye className="size-5 " />
                   View Details

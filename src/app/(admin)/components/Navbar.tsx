@@ -12,41 +12,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 import { useAdminContext } from "../dashboard/context/useAdminContext";
 import { useAppSelector, useAppDispatch } from "@/lib/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { logOut } from "@/toolkit/auth/authSlice";
-import { SignedOut, useClerk } from "@clerk/nextjs";
-import { useRedirectBasedOnRole } from "@/hooks/useRedirectBasedOnRole";
-import { useRouter } from "next/navigation";
-
-export interface User {
-  authId: string;
-  _id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneMobile?: number;
-  imageUrl: string;
-  role: "admin" | "user";
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { useClerk } from "@clerk/nextjs";
 
 export default function Navbar() {
-  const { signOut } = useClerk()
+  const { signOut } = useClerk();
 
   const { toggleSidebar } = useAdminContext();
   const { user, status } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  const handleLogout = () => {
-      signOut({redirectUrl:"/"})
-    dispatch(logOut());
-
-    // Add any additional logout logic here, such as redirecting to login page
+  const handleLogout = async () => {
+    await signOut({ redirectUrl: "/" });
+    dispatch(logOut())
   };
 
   return (
@@ -136,8 +118,4 @@ export default function Navbar() {
       </div>
     </header>
   );
-}
-
-function dispatch(arg0: { payload: undefined; type: "auth/logOut" }) {
-  throw new Error("Function not implemented.");
 }

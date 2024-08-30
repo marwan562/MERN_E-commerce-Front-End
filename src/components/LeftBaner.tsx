@@ -9,8 +9,8 @@ const LeftBaner = ({ image }: TProps) => {
       <Image
         src={image}
         alt="Product"
-        width={500}
-        height={500}
+        width={400}
+        height={400}
         className="w-full h-full rounded-lg shadow-md mb-4"
       />
     </div>

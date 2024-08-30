@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import OrderDetailsSkeleton from "@/components/skeletons/OrderDetailsSkeleton";
 import { TStatusOrder } from "@/interface";
+import { getStatusDetails } from "@/utils/getStatusOrder";
 
 const statusConfig: Record<
   TStatusOrder,
@@ -134,6 +135,7 @@ export default function OrderDetails({
     { skip: !token, pollingInterval: 10000 }
   );
 
+ 
   if (isLoading) {
     return <OrderDetailsSkeleton />;
   }
@@ -148,6 +150,7 @@ export default function OrderDetails({
       </Alert>
     );
   }
+  const { classes, icon } = getStatusDetails(order.status);
 
   return (
     <div className="container mx-auto my-8 px-4">
@@ -156,11 +159,7 @@ export default function OrderDetails({
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Order #{order._id}</span>
-            <Badge
-              variant={order.status === "Cancelled" ? "destructive" : "default"}
-            >
-              {order.status}
-            </Badge>
+            <Badge className={classes}>{icon}{order.status}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>

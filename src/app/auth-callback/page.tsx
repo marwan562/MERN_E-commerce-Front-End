@@ -1,50 +1,21 @@
+"use client";
 import LottieHandler from "@/components/Feedback/Lottiefiles/LottieHandler";
-import { User } from "@/interface";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
-const getUser = async (token: string | null): Promise<User> => {
-  try {
-    const response = await fetch(
-      `${process.env.BASE_URL}/protected-endpoint/createUser`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        cache: "force-cache",
+const AuthCallback = () => {
+
+  return (
+    <LottieHandler
+      type="loadingCart"
+      colorMessage="text-gray-500"
+      message={
+        <div className="flex flex-row items-center justify-center">
+          <Loader2 className="animate-spin size-7 mr-2" />
+          <span>Checking User...</span>
+        </div>
       }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to create user");
-    }
-
-    return await response.json();
-  } catch (err) {
-    throw err;
-  }
-};
-
-const AuthCallback = async () => {
-  const { getToken } = auth();
-  const token = await getToken();
-
-  if (!token) {
-    throw new Error("No token available");
-  }
-
-  const user = await getUser(token);
-  console.log(token);
-
-  if (user.role === "user") {
-    return redirect("/");
-  } else if (user.role === "admin") {
-    return redirect("/dashboard");
-  }
-
-  return <LottieHandler type="loadingCart" message="Checking User.." />;
+    />
+  );
 };
 
 export default AuthCallback;

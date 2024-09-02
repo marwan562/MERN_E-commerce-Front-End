@@ -6,8 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 type NavItem = "overview" | "orders" | "products" | "customers" | "categories";
 
 interface AdminContextProps {
-  activeNav: NavItem;
-  setActiveNav: (navItem: NavItem) => void;
+  activeNav: NavItem | string;
+  setActiveNav: (navItem: string) => void;
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
 }
@@ -26,12 +26,12 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const getInitialNav = (): NavItem => {
+  const getInitialNav = (): string => {
     const path = pathname.split("/")[2]; 
-    return (path as NavItem) || "overview";
+    return (path as string) || "overview";
   };
 
-  const [activeNav, setActiveNav] = useState<NavItem>(getInitialNav);
+  const [activeNav, setActiveNav] = useState(getInitialNav);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ pathname]);
 
-  const handleNavClick = useCallback((item: NavItem) => {
+  const handleNavClick = useCallback((item: string) => {
     setActiveNav(item);
     setIsSidebarOpen(false);
     router.push(`/dashboard/${item}`);

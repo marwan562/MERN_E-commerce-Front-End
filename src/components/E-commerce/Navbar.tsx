@@ -8,10 +8,8 @@ import WashlistHeader from "./WashlistHeader";
 import Link from "next/link";
 import NavSearch from "../NavSearch";
 import { useAppSelector } from "@/lib/store";
-import { useRedirectBasedOnRole } from "@/hooks/useRedirectBasedOnRole";
 
 const Navbar = () => {
-  useRedirectBasedOnRole();
 
   const { isAuthanticated } = useAppSelector((state) => state.auth);
   return (

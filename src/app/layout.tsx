@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as ToasterSonner } from "sonner";
 import InternetConnecationProvider from "@/providers/InternetConnectionProvider";
 import NextTopLoading from "@/components/NextTopLoading";
+import RedirectRoleProvider from "@/providers/RedirectRoleProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,9 +30,7 @@ export default function RootLayout({
           <StoreProvider>
             <InternetConnecationProvider>
               <NextTopLoading />
-
-              {children}
-
+              <RedirectRoleProvider>{children}</RedirectRoleProvider>
               <Toaster />
               <ToasterSonner position="top-center" />
             </InternetConnecationProvider>

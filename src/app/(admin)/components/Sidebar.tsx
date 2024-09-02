@@ -44,7 +44,7 @@ export const Sidebar = () => {
               className={`flex items-center py-4 px-6 hover:bg-gray-200 ${
                 activeNav === key ? "bg-gray-200 text-primary" : "text-gray-500"
               }`}
-              onClick={() => setActiveNav(key)}
+              onClick={() => setActiveNav(key )}
             >
               {icon}
               <span className="mx-4">{label}</span>

@@ -2,13 +2,13 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse, NextRequest } from "next/server";
 import { User } from "./interface";
 
-// Define your protected routes
-const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/profile(.*)"]);
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/auth-callback(.*)", "/(.*)"]);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
   if (isProtectedRoute(req)) {
     const { getToken } = auth();
     const token = await getToken();
+
     if (token) {
       try {
         const response = await fetch(
@@ -28,13 +28,22 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
           throw new Error("Failed to create user");
         }
 
-        const user = (await response.json()) as User;
-        console.log("User response:", user);
+        const data = await response.json();
+        const user = data.user as User;
+
+        const currentPathname = req.nextUrl.pathname;
 
         if (user.role === "admin") {
-          return NextResponse.redirect(new URL("/dashboard", req.url));
+          if (currentPathname === "/") {
+            return NextResponse.redirect(new URL("/dashboard", req.url));
+          }
+          if (!currentPathname.startsWith("/dashboard")) {
+            return NextResponse.redirect(new URL("/dashboard", req.url));
+          }
         } else if (user.role === "user") {
-          return NextResponse.redirect(new URL("/", req.url));
+          if (currentPathname === "/dashboard" || currentPathname.startsWith("/dashboard")) {
+            return NextResponse.redirect(new URL("/", req.url));
+          }
         }
       } catch (error) {
         console.error("Error in middleware:", error);

@@ -19,26 +19,30 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { logOut } from "@/toolkit/auth/authSlice";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Navbar() {
-  const { signOut } = useClerk();
-  const { push } = useRouter();
-  const [loading, setLoading] = useState(false);
   const { toggleSidebar } = useAdminContext();
-  const { user, status } = useAppSelector((state) => state.auth);
+  const { signOut } = useClerk();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
-  const userStatus = useAppSelector((state) => state.auth.status); // Removed 'user' since it's unused
+  const { user, status } = useAppSelector((state) => state.auth);
 
   const handleLogout = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      push("/");
       await signOut({ redirectUrl: "/" });
       dispatch(logOut());
+      router.refresh();
+      toast.success("Log out Successfully.");
+      router.push("/");
+    } catch (error) {
+      console.error("Failed to log out", error);
     } finally {
       setLoading(false);
     }
-  }, [dispatch, push, signOut]);
+  }, [dispatch, router, signOut]);
 
   return (
     <header className="bg-white shadow-sm z-10">
@@ -76,7 +80,7 @@ export default function Navbar() {
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              {loading || userStatus === "pending" ? (
+              {loading || status === "pending" ? (
                 <Skeleton className="h-10 w-10 rounded-full" />
               ) : (
                 <Button

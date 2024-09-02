@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { ReactNode } from "react";
 import Lottie from "lottie-react";
 import loadingCart from "./loading.json";
@@ -16,16 +16,16 @@ const lottieTypes = {
   cartEmpty,
   trackingTruck,
   internetOffline,
-  pageNotFound
+  pageNotFound,
 };
 
 type TProps = {
   type: keyof typeof lottieTypes;
-  message?: string;
+  message?: string | ReactNode;
   className?: string;
   size?: string;
-  colorMessage?:string;
-  Button?:ReactNode
+  colorMessage?: string;
+  Button?: ReactNode;
 };
 
 const LottieHandler = ({
@@ -39,10 +39,17 @@ const LottieHandler = ({
   const lottie = lottieTypes[type];
   return (
     <div className={className}>
-      <div className={`${size}  flex flex-col items-center justify-center space-y-2`}>
+      <div
+        className={`${size}  flex flex-col items-center justify-center space-y-2`}
+      >
         <Lottie size={500} animationData={lottie} />
-       {Button}
-        {message && <h2 className={` text-center text-3xl ${colorMessage}`}> {message}</h2>}
+        {Button}
+        {message && (
+          <h2 className={` text-center text-3xl ${colorMessage}`}>
+            {" "}
+            {message}
+          </h2>
+        )}
       </div>
     </div>
   );

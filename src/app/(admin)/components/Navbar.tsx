@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { Menu, Bell, LogOut, User, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,18 +18,27 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { logOut } from "@/toolkit/auth/authSlice";
 import { useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const { signOut } = useClerk();
-
+  const { push } = useRouter();
+  const [loading, setLoading] = useState(false);
   const { toggleSidebar } = useAdminContext();
   const { user, status } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  const userStatus = useAppSelector((state) => state.auth.status); // Removed 'user' since it's unused
 
-  const handleLogout = async () => {
-    await signOut({ redirectUrl: "/" });
-    dispatch(logOut())
-  };
+  const handleLogout = useCallback(async () => {
+    try {
+      setLoading(true);
+      push("/");
+      await signOut({ redirectUrl: "/" });
+      dispatch(logOut());
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch, push, signOut]);
 
   return (
     <header className="bg-white shadow-sm z-10">
@@ -67,7 +76,7 @@ export default function Navbar() {
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              {status === "pending" ? (
+              {loading || userStatus === "pending" ? (
                 <Skeleton className="h-10 w-10 rounded-full" />
               ) : (
                 <Button

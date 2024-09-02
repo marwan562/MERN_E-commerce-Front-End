@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import StoreProvider from "@/providers/StoreProvider";
@@ -16,17 +15,11 @@ export const metadata: Metadata = {
   description: "Black Ecommerce",
 };
 
-
-const getUser = async  () => {
-  const res = fetch(`${process.env.BASE_URL}/pro`)
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   const clerkPubKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
   return (

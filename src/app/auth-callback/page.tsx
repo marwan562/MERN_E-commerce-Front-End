@@ -27,29 +27,24 @@ const getUser = async (token: string | null): Promise<User> => {
   }
 };
 
-const authCallback = async () => {
-  try {
-    const { getToken } = auth();
-    const token = await getToken();
+const AuthCallback = async () => {
+  const { getToken } = auth();
+  const token = await getToken();
 
-    if (!token) {
-      throw new Error("No token available");
-    }
+  if (!token) {
+    throw new Error("No token available");
+  }
 
-    const user = await getUser(token);
-    console.log(token);
+  const user = await getUser(token);
+  console.log(token);
 
-    if (user.role === "user") {
-      return redirect("/");
-    } else if (user.role === "admin") {
-      return redirect("/dashboard");
-    }
-  } catch (error) {
-    console.error("Authentication error:", error);
-    return redirect("/error");
+  if (user.role === "user") {
+    return redirect("/");
+  } else if (user.role === "admin") {
+    return redirect("/dashboard");
   }
 
   return <LottieHandler type="loadingCart" message="Checking User.." />;
 };
 
-export default authCallback;
+export default AuthCallback;

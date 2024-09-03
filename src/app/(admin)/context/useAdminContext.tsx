@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-type NavItem = "overview" | "orders" | "products" | "customers" | "categories";
+type NavItem = "overview" | "orders" | "products" | "customers" | "categories" |"mails"
 
 interface AdminContextProps {
   activeNav: NavItem | string;
@@ -28,7 +28,7 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
 
   const getInitialNav = (): string => {
     const path = pathname.split("/")[2]; 
-    return (path as string) || "overview";
+    return (path as string) || "";
   };
 
   const [activeNav, setActiveNav] = useState(getInitialNav);

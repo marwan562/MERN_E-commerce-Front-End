@@ -11,8 +11,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { useAdminContext } from "../dashboard/context/useAdminContext";
+import { useAdminContext } from "../context/useAdminContext";
 import { useAppSelector, useAppDispatch } from "@/lib/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,9 +28,10 @@ import { logOut } from "@/toolkit/auth/authSlice";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Sidebar from "./Sidebar";
 
 export default function Navbar() {
-  const { toggleSidebar } = useAdminContext();
+  const { toggleSidebar, isSidebarOpen } = useAdminContext();
   const { signOut } = useClerk();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -47,10 +56,18 @@ export default function Navbar() {
   return (
     <header className="bg-white shadow-sm z-10">
       <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <Button variant="ghost" className="md:hidden" onClick={toggleSidebar}>
-          <Menu className="h-6 w-6" />
-          <span className="sr-only">Toggle sidebar</span>
-        </Button>
+        <Sheet>
+          <SheetTrigger>
+            <Button variant="ghost" className="md:hidden">
+              <Menu className="h-6 w-6" />
+              <span className="sr-only">Toggle sidebar</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+           <Sidebar/>
+          </SheetContent>
+        </Sheet>
+
         <div className="flex items-center space-x-4">
           <form className="relative">
             <Input

@@ -2,7 +2,10 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse, NextRequest } from "next/server";
 import { User } from "./interface";
 
-const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/auth-callback(.*)", "/(.*)"]);
+const isProtectedRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/auth-callback(.*)",
+]);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
   if (isProtectedRoute(req)) {
@@ -30,6 +33,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 
         const data = await response.json();
         const user = data.user as User;
+        console.log(user);
 
         const currentPathname = req.nextUrl.pathname;
 
@@ -41,7 +45,10 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
             return NextResponse.redirect(new URL("/dashboard", req.url));
           }
         } else if (user.role === "user") {
-          if (currentPathname === "/dashboard" || currentPathname.startsWith("/dashboard")) {
+          if (
+            currentPathname === "/dashboard" ||
+            currentPathname.startsWith("/dashboard")
+          ) {
             return NextResponse.redirect(new URL("/", req.url));
           }
         }

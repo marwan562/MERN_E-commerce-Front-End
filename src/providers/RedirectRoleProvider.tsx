@@ -16,6 +16,8 @@ const RedirectRoleProvider = ({ children }: { children: ReactNode }) => {
   const { isAuthanticated, user } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
+    console.log("re-render");
+
     const handleAuthChange = async () => {
       if (!isLoaded) return;
 
@@ -26,32 +28,17 @@ const RedirectRoleProvider = ({ children }: { children: ReactNode }) => {
         dispatch(logOut());
         dispatch(cleanCartItemsAction());
         dispatch(cleanWashlistAction());
-        router.push("/auth-callback");
         return;
       }
 
       if (isAuthanticated) {
-        if (user?.role === "admin") {
-          if (pathname === "/") {
-            const lastVisitedPage = sessionStorage.getItem("lastVisitedPage");
-            if (lastVisitedPage) {
-              router.push(lastVisitedPage);
-            } else {
-              router.push("/dashboard");
-            }
-          }
-        } else if (user?.role === "user") {
-          if (pathname === "/dashboard") {
-            router.push("/");
-          }
-        } else {
-          console.error("Unknown user role:", user?.role);
-          router.push("/internet");
-        }
-      } else {
-        if (user?.role === "admin") {
+        if (user?.role === "admin" && pathname === "/") {
           router.push("/dashboard");
+        } else if (user?.role === "user" && pathname === "/dashboard") {
+          router.push("/");
         }
+      } else if (user?.role === "admin" && pathname !== "/dashboard") {
+        router.push("/dashboard");
       }
     };
 
@@ -62,16 +49,10 @@ const RedirectRoleProvider = ({ children }: { children: ReactNode }) => {
     isAuthanticated,
     dispatch,
     getToken,
-    user,
+    user?.role,  
     router,
     pathname,
   ]);
-
-  useEffect(() => {
-    if (user?.role === "admin" && pathname !== "/dashboard") {
-      sessionStorage.setItem("lastVisitedPage", pathname);
-    }
-  }, [pathname, user]);
 
   return <>{children}</>;
 };

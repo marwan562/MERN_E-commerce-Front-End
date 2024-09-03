@@ -9,8 +9,9 @@ import {
   Users,
   List,
   ChartLine,
+  Mails,
 } from "lucide-react";
-import { useAdminContext } from "../dashboard/context/useAdminContext";
+import { useAdminContext } from "../context/useAdminContext";
 
 const navItems = [
   { key: "", icon: <LayoutDashboard size={20} />, label: "Overview" },
@@ -23,15 +24,22 @@ const navItems = [
   },
   { key: "customers", icon: <Users size={20} />, label: "Customers" },
   { key: "categories", icon: <List size={20} />, label: "Categories" },
+  { key: "mails", icon: <Mails size={20} />, label: "Mails" },
 ];
 
-export const Sidebar = () => {
+
+type TProps = {
+  className?:string;
+
+}
+
+export const Sidebar = ({ className= " w-64 min-h-screen flex flex-col" }:TProps) => {
   const { activeNav, setActiveNav, isSidebarOpen } = useAdminContext();
 
   return (
     <aside
-      className={`bg-white w-64 min-h-screen flex flex-col ${
-        isSidebarOpen ? "block" : "hidden"
+      className={` bg-white ${className} ${
+        isSidebarOpen ? "block " : "hidden"
       } md:block`}
     >
       <div className="flex items-center justify-center h-20 shadow-md">
@@ -44,7 +52,7 @@ export const Sidebar = () => {
               className={`flex items-center py-4 px-6 hover:bg-gray-200 ${
                 activeNav === key ? "bg-gray-200 text-primary" : "text-gray-500"
               }`}
-              onClick={() => setActiveNav(key )}
+              onClick={() => setActiveNav(key)}
             >
               {icon}
               <span className="mx-4">{label}</span>

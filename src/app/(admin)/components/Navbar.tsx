@@ -43,7 +43,6 @@ export default function Navbar() {
     try {
       await signOut({ redirectUrl: "/" });
       dispatch(logOut());
-      router.refresh();
       toast.success("Log out Successfully.");
       router.push("/");
     } catch (error) {

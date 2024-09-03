@@ -1,6 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { actCreateUser } from "./act/createUser";
 import { User } from "@/interface";
+import { toast } from "sonner";
+import {
+  actUpdateImageUser,
+  actUpdateInforamtionUser,
+} from "./act/actUpdateUser";
 
 type TinitialState = {
   isAuthanticated: boolean;
@@ -45,6 +50,27 @@ const authSlice = createSlice({
         state.error = action.payload;
       }
     });
+    builder.addCase(actUpdateInforamtionUser.fulfilled, (state, action) => {
+      state.status = "success";
+      state.user = action.payload.user;
+      if (action.payload && typeof action.payload === "string") {
+        state.error = action.payload;
+      }
+    });
+    builder.addCase(
+      actUpdateImageUser.fulfilled,
+      (state, action: PayloadAction<{ imageUrl: string }>) => {
+        state.status = "success";
+
+        if (state.user) {
+          state.user.imageUrl = action.payload.imageUrl;
+        }
+
+        if (typeof action.payload === "string") {
+          state.error = action.payload;
+        }
+      }
+    );
   },
 });
 

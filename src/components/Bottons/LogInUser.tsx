@@ -13,7 +13,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 
 import { useAppDispatch, useAppSelector } from "@/lib/store";
-import { LogInIcon, LogOut, Settings, ShoppingCart, User } from "lucide-react";
+import {
+  LogInIcon,
+  LogOut,
+  Mails,
+  Settings,
+  ShoppingCart,
+  User,
+} from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { logOut } from "@/toolkit/auth/authSlice";
@@ -68,14 +75,22 @@ const LogInUser = () => {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </DropdownMenuItem>
+              <Link href="/profile" className=" cursor-pointer">
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+              </Link>
               <Link href="/myOrders" className=" cursor-pointer">
                 <DropdownMenuItem>
                   <ShoppingCart className="mr-2 h-4 w-4" />
                   <span>My Orders</span>
+                </DropdownMenuItem>
+              </Link>
+              <Link href="/mails" className=" cursor-pointer">
+                <DropdownMenuItem>
+                  <Mails className="mr-2 h-4 w-4" />
+                  <span>Mails</span>
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuItem>

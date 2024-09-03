@@ -10,7 +10,6 @@ import NavSearch from "../NavSearch";
 import { useAppSelector } from "@/lib/store";
 
 const Navbar = () => {
-
   const { isAuthanticated } = useAppSelector((state) => state.auth);
   return (
     <nav>

@@ -254,6 +254,7 @@ export default function OrderDetails({
           </div>
         </CardContent>
       </Card>
+     
     </div>
   );
 }

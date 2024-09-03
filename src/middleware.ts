@@ -51,10 +51,10 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
           ) {
             return NextResponse.redirect(new URL("/", req.url));
           }
+          return NextResponse.redirect(new URL("/", req.url));
         }
       } catch (error) {
-        console.error("Error in middleware:", error);
-        return NextResponse.redirect(new URL("/internet", req.url));
+        return NextResponse.next();
       }
     }
   }

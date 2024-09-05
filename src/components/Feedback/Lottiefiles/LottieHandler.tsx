@@ -7,6 +7,8 @@ import cartEmpty from "./cartEmpty.json";
 import pageNotFound from "./pageNotFound.json";
 import trackingTruck from "./trackingTruck.json";
 import internetOffline from "./internetOffline.json";
+import emailSuccess from "./emailSuccess.json";
+import MailBoxEmpty from "./MailBoxEmpty.json";
 import paymentSuccessfully from "./paymentSuccessfully.json";
 
 const lottieTypes = {
@@ -17,6 +19,8 @@ const lottieTypes = {
   trackingTruck,
   internetOffline,
   pageNotFound,
+  emailSuccess,
+  MailBoxEmpty
 };
 
 type TProps = {

@@ -140,7 +140,7 @@ export type TDaysData = {
 };
 
 export type TResCustomers = {
-  customers: User[]
+  customers: User[];
   pagination: {
     totalPages: number;
     totalCustomers: number;
@@ -148,3 +148,17 @@ export type TResCustomers = {
     pageSize: number;
   };
 };
+
+export interface IMail {
+  _id?:string
+  orderId: string;
+  userId: string;
+  adminId: string;
+  subject: string;
+  body: string;
+  status: "read" | "unread";
+  mailType: "orderConfirmation" | "shippingNotification" | "customerInquiry";
+  image: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

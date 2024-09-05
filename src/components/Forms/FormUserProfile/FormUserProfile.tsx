@@ -8,7 +8,6 @@ import { User } from "@/interface";
 import { CardFooter } from "@/components/ui/card";
 import { LoaderCircle } from "lucide-react";
 
-
 const userFormSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),

@@ -13,6 +13,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import cartSlice from "@/toolkit/Cart/cartSlice";
 import authSlice from "@/toolkit/auth/authSlice";
+import mailsSlice from "@/toolkit/Mails/mailSlice";
 import networkSlice from "@/toolkit/Network/networkSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { orderApi } from "@/toolkit/Apis/OrderApi";
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authSlice),
   cart: persistReducer(CartPersistConfig, cartSlice),
   washlist: persistReducer(WashlistPersistConfig, washlistSlice),
+  mails: mailsSlice,
   network: networkSlice,
   [orderApi.reducerPath]: orderApi.reducer,
   [categoryApi.reducerPath]: categoryApi.reducer,

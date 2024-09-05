@@ -15,11 +15,25 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import OrderDetailsSkeleton from "@/components/skeletons/OrderDetailsSkeleton";
 import { TStatusOrder } from "@/interface";
 import { getStatusDetails } from "@/utils/getStatusOrder";
+import FormSendMailForOrder from "@/components/Forms/FormSendMailForOrder/FormSendMailForOrder";
+import { useAppDispatch, useAppSelector } from "@/lib/store";
+import { toast } from "sonner";
+import { actCreateMyMailForOrder } from "@/toolkit/Mails/act/actCreateMyMailForOrder";
+import { useAuthToken } from "@/hooks/useAuthToken";
+import { actFindMyMailByOrderId } from "@/toolkit/Mails/act/actFindMyMailByOrderId";
+import LottieHandler from "@/components/Feedback/Lottiefiles/LottieHandler";
+import { clearMailsAction } from "@/toolkit/Mails/mailSlice";
 
 const statusConfig: Record<
   TStatusOrder,
@@ -74,7 +88,7 @@ const ProgressIndicator = ({
       : (currentIndex / (statusOrder.length - 1)) * 100;
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 ">
       <div className="mb-2 flex justify-between">
         {statusOrder.map((status) => (
           <div key={status} className="flex flex-col items-center">
@@ -108,24 +122,16 @@ const ProgressIndicator = ({
     </div>
   );
 };
-
 export default function OrderDetails({
   params,
 }: {
   params: { detailsOrder: string };
 }) {
-  const { getToken } = useAuth();
-  const [token, setToken] = useState<string | null>(null);
-
-  console.log(token);
-  useEffect(() => {
-    const fetchToken = async () => {
-      const token = await getToken();
-      setToken(token);
-    };
-    fetchToken();
-  }, [getToken]);
-
+  const dispatch = useAppDispatch();
+  const token = useAuthToken();
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSendingMail, setIsSendingMail] = useState(false);
+  const { mail } = useAppSelector((state) => state.mails);
   const {
     data: order,
     isLoading,
@@ -135,7 +141,33 @@ export default function OrderDetails({
     { skip: !token, pollingInterval: 10000 }
   );
 
- 
+  useEffect(() => {
+    if (order?._id) {
+      dispatch(actFindMyMailByOrderId({ token, orderId: order._id }));
+    }
+
+    return () => {
+      dispatch(clearMailsAction());
+    };
+  }, [dispatch, order?._id, token]);
+
+  const createMailForOrder = async (formMail: FormData) => {
+    const orderId = order?._id;
+    try {
+      setIsSendingMail(true);
+      if (token && orderId) {
+        await dispatch(actCreateMyMailForOrder({ token, formMail, orderId }));
+        setIsSuccess(true);
+      }
+    } catch (err) {
+      if (err && typeof err === "string") {
+        toast.error(err);
+      }
+    } finally {
+      setIsSendingMail(false);
+    }
+  };
+
   if (isLoading) {
     return <OrderDetailsSkeleton />;
   }
@@ -150,16 +182,20 @@ export default function OrderDetails({
       </Alert>
     );
   }
+
   const { classes, icon } = getStatusDetails(order.status);
 
   return (
-    <div className="container mx-auto my-8 px-4">
+    <div className="container mx-auto my-8 px-4 space-y-5">
       <h1 className="mb-6 text-3xl font-bold">Order Details</h1>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Order #{order._id}</span>
-            <Badge className={classes}>{icon}{order.status}</Badge>
+            <Badge className={classes}>
+              {icon}
+              {order.status}
+            </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -180,7 +216,7 @@ export default function OrderDetails({
               <CardHeader>
                 <CardTitle>Delivery Details</CardTitle>
               </CardHeader>
-              <CardContent className=" space-y-2">
+              <CardContent className="space-y-2">
                 <p className="font-semibold">{order.deliveryDetails.name}</p>
                 <p className="flex items-center text-sm text-gray-600">
                   <MapPin className="mr-2 h-4 w-4" />
@@ -254,7 +290,25 @@ export default function OrderDetails({
           </div>
         </CardContent>
       </Card>
-     
+
+      {mail?.orderId === order._id ? null : isSuccess ? (
+        <LottieHandler type="emailSuccess" />
+      ) : (
+        <Card className="max-w-3xl mx-auto">
+          <CardHeader>
+            <CardTitle>Order Configuration</CardTitle>
+            <CardDescription>
+              Send an email about your order details.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FormSendMailForOrder
+              isLoading={isSendingMail}
+              onSave={(formData) => createMailForOrder(formData)}
+            />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

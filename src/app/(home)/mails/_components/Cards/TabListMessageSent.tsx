@@ -64,6 +64,7 @@ const TabListMessageSent = () => {
 
   const removeMyMialHanlder = async (mailId:string | undefined) => {
     try {
+      toast.success("Removed Mail Successfully")
         await dispatch(actRemoveMyMail({token,mailId})).unwrap()
     }catch(err){
       toast.error(err as string)

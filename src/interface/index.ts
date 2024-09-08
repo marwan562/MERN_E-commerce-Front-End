@@ -149,16 +149,25 @@ export type TResCustomers = {
   };
 };
 
+export type TReplies = {
+  _id: string;
+  content: string;
+  user: Partial<User>;
+  isRead: boolean;
+  timestamp: Date;
+};
+
 export interface IMail {
-  _id?:string
+  _id?: string;
   orderId: string;
-  userId: string;
+  userId: User | string;
   adminId: string;
   subject: string;
   body: string;
   status: "read" | "unread";
   mailType: "orderConfirmation" | "shippingNotification" | "customerInquiry";
   image: string;
+  replies?: TReplies[];
   createdAt: Date;
   updatedAt: Date;
 }

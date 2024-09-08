@@ -11,15 +11,6 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import {
   useGetMyOrdersQuery,
@@ -232,7 +223,7 @@ export default function PageOrdersCustomer({
   );
 }
 
-function ArrowUpDownIcon(props) {
+function ArrowUpDownIcon(props:any) {
   return (
     <svg
       {...props}

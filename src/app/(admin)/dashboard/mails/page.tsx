@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,227 +11,393 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Search,
-  MoreVertical,
-  MessageCircle,
-  UserCog,
-  Trash2,
+  Mail,
+  MailOpen,
+  Send,
+  Loader2,
+  CheckCheck,
+  Check,
+  Eye,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PaginationOrders } from "../../components/PaginationOrder";
+import Image from "next/image";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useAppDispatch, useAppSelector } from "@/lib/store";
+import { useAuthToken } from "@/hooks/useAuthToken";
+import { actGetAllMails } from "@/toolkit/Mails/actForAdmin/actGetAllMails";
+import ProductsPagination from "../../components/ProductsPagination";
+import { clearMailsAction, setPage } from "@/toolkit/Mails/mailSlice";
+import { format } from "date-fns";
+import { actReplyMailToUser } from "@/toolkit/Mails/actForAdmin/actReplyMailToUser";
+import { IMail, User } from "@/interface";
+import { useDebounce } from "use-debounce";
+import Link from "next/link";
+import { actUpdateIsReadMail } from "@/toolkit/Mails/actForAdmin/actUpdateIsReadMail";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  lastActive: string;
-  status: "online" | "offline" | "away";
-  role: "user" | "moderator" | "admin";
-};
+export default function AdminMailPage() {
+  const token = useAuthToken();
+  const dispatch = useAppDispatch();
+  const {
+    mails,
+    pagination: { page, totalMails, totalPages },
+  } = useAppSelector((state) => state.mails);
 
-const initialUsers: User[] = [
-  {
-    id: "1",
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    lastActive: "2 minutes ago",
-    status: "online",
-    role: "user",
-  },
-  {
-    id: "2",
-    name: "Bob Smith",
-    email: "bob@example.com",
-    lastActive: "1 hour ago",
-    status: "away",
-    role: "moderator",
-  },
-  {
-    id: "3",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    lastActive: "3 days ago",
-    status: "offline",
-    role: "user",
-  },
-  {
-    id: "4",
-    name: "Diana Prince",
-    email: "diana@example.com",
-    lastActive: "5 minutes ago",
-    status: "online",
-    role: "admin",
-  },
-  {
-    id: "5",
-    name: "Ethan Hunt",
-    email: "ethan@example.com",
-    lastActive: "2 hours ago",
-    status: "offline",
-    role: "user",
-  },
-];
+  const [selectedMail, setSelectedMail] = useState<IMail | null>(null);
+  const [filterType, setFilterType] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [replyContent, setReplyContent] = useState<string>("");
+  const [isReplying, setIsReplying] = useState<boolean>(false);
+  const [search] = useDebounce(searchTerm, 500);
 
-export default function AdminChatUsers() {
-  const [users, setUsers] = useState<User[]>(initialUsers);
-  const [searchTerm, setSearchTerm] = useState("");
+  useEffect(() => {
+    if (token) {
+      dispatch(
+        actGetAllMails({
+          token,
+          page,
+          search,
+          filterStatus,
+          filterMailType: filterType,
+        })
+      );
+    }
+    return () => {
+      dispatch(clearMailsAction());
+    };
+  }, [token, search, filterStatus, filterType, dispatch, page]);
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
+  useEffect(() => {
+    if (selectedMail && mails.length) {
+      const updatedMail = mails.find((mail) => mail._id === selectedMail._id);
+      if (updatedMail) setSelectedMail(updatedMail);
+    }
+  }, [selectedMail, mails]);
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const getStatusColor = (status: User["status"]) => {
-    switch (status) {
-      case "online":
-        return "bg-green-500";
-      case "away":
-        return "bg-yellow-500";
-      case "offline":
-        return "bg-gray-500";
+  const handleReply = async () => {
+    if (selectedMail && replyContent.trim()) {
+      setIsReplying(true);
+      try {
+        await dispatch(
+          actReplyMailToUser({
+            token,
+            content: replyContent,
+            mailId: selectedMail._id as string,
+          })
+        );
+        setReplyContent("");
+      } finally {
+        setIsReplying(false);
+      }
     }
   };
 
-  const handleChatNow = (userId: string) => {
-    console.log(`Initiating chat with user ${userId}`);
-    // Implement chat initiation logic here
-  };
-
-  const handleEditUser = (userId: string) => {
-    console.log(`Editing user ${userId}`);
-    // Implement user editing logic here
-  };
-
-  const handleDeleteUser = (userId: string) => {
-    console.log(`Deleting user ${userId}`);
-    // Implement user deletion logic here
+  const handleMailOpen = (mail: IMail) => {
+    setSelectedMail(mail);
+    if (mail.status === "unread") {
+      dispatch(actUpdateIsReadMail({ mailId: mail._id as string, token }));
+    }
   };
 
   return (
-    <Card className="container mx-auto py-10">
-      <CardHeader>
-        <CardTitle>
-          {" "}
-          <h1 className="text-3xl font-bold mb-6">Mails Users</h1>
-        </CardTitle>
-        <div className="flex justify-between items-center mb-6">
-          <div className="relative w-64">
-            <Input
-              type="text"
-              placeholder="Search users..."
-              value={searchTerm}
-              onChange={handleSearch}
-              className="pl-10"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-          </div>
-          <Button>Add New User</Button>
-        </div>
+    <Card className="container mx-auto p-4">
+      <CardHeader className="text-2xl font-bold mb-4">
+        Admin Mail Management
       </CardHeader>
       <CardContent>
-        {" "}
-        <div className="border rounded-lg overflow-hidden">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+          <div className="w-full sm:w-auto relative">
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search mails..."
+              className="pl-8 w-full sm:w-64"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Select onValueChange={setFilterType}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="orderConfirmation">
+                  Order Confirmation
+                </SelectItem>
+                <SelectItem value="shippingNotification">
+                  Shipping Notification
+                </SelectItem>
+                <SelectItem value="customerInquiry">
+                  Customer Inquiry
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <Select onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="read">Read</SelectItem>
+                <SelectItem value="unread">Unread</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[250px]">Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Last Active</TableHead>
+                <TableHead>From</TableHead>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Subject</TableHead>
+                <TableHead>Type</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">
+              {mails.map((mail) => (
+                <TableRow key={mail._id}>
+                  <TableCell>
                     <div className="flex items-center">
-                      <Avatar className="h-8 w-8 mr-2">
+                      <Avatar className="mr-2">
                         <AvatarImage
-                          src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.name}`}
+                          src={(mail.userId as User).imageUrl}
+                          alt={`${(mail.userId as User).firstName} ${
+                            (mail.userId as User).lastName
+                          }`}
                         />
                         <AvatarFallback>
-                          {user.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
+                          {(mail.userId as User).firstName[0]}
+                          {(mail.userId as User).lastName[0]}
                         </AvatarFallback>
                       </Avatar>
-                      {user.name}
+                      <div>
+                        <div>
+                          {(mail.userId as User).firstName}{" "}
+                          {(mail.userId as User).lastName}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {(mail.userId as User).email}
+                        </div>
+                      </div>
                     </div>
                   </TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.lastActive}</TableCell>
+                  <TableCell>{mail.orderId}</TableCell>
+                  <TableCell>{mail.subject}</TableCell>
                   <TableCell>
                     <Badge
-                      variant="outline"
-                      className={`${getStatusColor(user.status)} text-white`}
+                      variant={
+                        mail.mailType === "orderConfirmation"
+                          ? "default"
+                          : mail.mailType === "shippingNotification"
+                          ? "secondary"
+                          : "outline"
+                      }
                     >
-                      {user.status}
+                      {mail.mailType}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="secondary">{user.role}</Badge>
+                    <Badge
+                      className={
+                        mail.status === "read" ? "bg-green-600" : "bg-red-600"
+                      }
+                    >
+                      {mail.status}
+                    </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreVertical className="h-4 w-4" />
+                  <TableCell>
+                    {format(new Date(mail.createdAt), "PP")}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex gap-2"
+                            onClick={() => handleMailOpen(mail)}
+                          >
+                            {mail.status === "read" ? (
+                              <MailOpen size={16} />
+                            ) : (
+                              <Mail size={16} />
+                            )}
+                            View
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>{selectedMail?.subject}</DialogTitle>
+                          </DialogHeader>
+                          <div className="mt-4">
+                            <p>
+                              <strong>From:</strong>{" "}
+                              {(selectedMail?.userId as User)?.email}
+                            </p>
+                            <p>
+                              <strong>Order ID:</strong> {selectedMail?.orderId}
+                            </p>
+                            <p>
+                              <strong>Type:</strong> {selectedMail?.mailType}
+                            </p>
+                            <p>
+                              <strong>Date:</strong>{" "}
+                              {selectedMail?.createdAt
+                                ? format(new Date(selectedMail.createdAt), "Pp")
+                                : "Invalid Date"}
+                            </p>
+                            <div className="mt-4">
+                              <p>
+                                <strong>Message:</strong>
+                              </p>
+                              <p className="whitespace-pre-wrap">
+                                {selectedMail?.body}
+                              </p>
+                            </div>
+                            {selectedMail?.image && (
+                              <div className="mt-4">
+                                <p>
+                                  <strong>Attachment:</strong>
+                                </p>
+                                <div className="relative w-full h-64 mt-2">
+                                  <Image
+                                    src={selectedMail.image}
+                                    alt="Mail attachment"
+                                    layout="fill"
+                                    objectFit="contain"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                            <div className="mt-6">
+                              <h3 className="text-lg font-semibold mb-2">
+                                Conversation
+                              </h3>
+                              <div className="space-y-4">
+                                {selectedMail?.replies &&
+                                  selectedMail.replies.map((reply) => (
+                                    <div
+                                      key={reply._id}
+                                      className={`flex ${
+                                        reply.user.role === "admin"
+                                          ? "justify-end"
+                                          : "justify-start"
+                                      }`}
+                                    >
+                                      <div
+                                        className={`flex items-start gap-2 max-w-[70%] ${
+                                          reply.user.role === "admin"
+                                            ? "flex-row-reverse"
+                                            : ""
+                                        }`}
+                                      >
+                                        <Avatar className="h-10 w-10">
+                                          <AvatarImage
+                                            src={reply.user.imageUrl}
+                                            alt={`${reply.user.firstName} ${reply.user.lastName}`}
+                                          />
+                                          <AvatarFallback>
+                                            {reply.user.firstName?.[0]}
+                                            {reply.user.lastName?.[0]}
+                                          </AvatarFallback>
+                                        </Avatar>
+                                        <div
+                                          className={`p-4 rounded-lg ${
+                                            reply.user.role === "admin"
+                                              ? "bg-gray-200"
+                                              : "bg-blue-100"
+                                          }`}
+                                        >
+                                          <p className="text-sm">
+                                            {reply.content}
+                                          </p>
+                                          <p className="text-xs text-gray-500 mt-2 flex felx-row gap-1 items-center">
+                                            {reply.isRead ? (
+                                              <CheckCheck className="size-4 text-green-500 " />
+                                            ) : (
+                                              <Check className="size-4 " />
+                                            )}
+                                            {format(
+                                              new Date(reply.timestamp),
+                                              "p"
+                                            )}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                              </div>
+                              <div className="mt-6">
+                                <Textarea
+                                  value={replyContent}
+                                  onChange={(e) =>
+                                    setReplyContent(e.target.value)
+                                  }
+                                  placeholder="Type your reply..."
+                                  rows={4}
+                                />
+                                <Button
+                                  className="mt-4"
+                                  onClick={handleReply}
+                                  disabled={!replyContent.trim() || isReplying}
+                                >
+                                  {isReplying ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <Send className="mr-2 h-4 w-4" />
+                                  )}
+                                  {isReplying ? "Sending..." : "Reply"}
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                      <Link href={`/dashboard/orders/${mail.orderId}`}>
+                        <Button className=" bg-purple-700 " size={"sm"}>
+                          <Eye className="size-4 mr-2" />
+                          Order{" "}
                         </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                          onClick={() => handleChatNow(user.id)}
-                          className="text-blue-600"
-                        >
-                          <MessageCircle className="mr-2 h-4 w-4" />
-                          Chat Now
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => handleEditUser(user.id)}
-                          className="text-yellow-600"
-                        >
-                          <UserCog className="mr-2 h-4 w-4" />
-                          Edit User
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteUser(user.id)}
-                          className="text-red-600"
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Mail
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      </Link>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
+        <ProductsPagination
+          onPageChange={(newPage) => dispatch(setPage(newPage))}
+          page={page}
+          totalPages={totalPages}
+          totalProducts={totalMails}
+        />
       </CardContent>
-      <PaginationOrders/>
     </Card>
   );
 }

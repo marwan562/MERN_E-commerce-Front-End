@@ -43,7 +43,7 @@ type TProps = {
   onSave: (values: FormData) => void;
 };
 
-const FormSendMailForOrder = ({  isLoading, onSave }: TProps) => {
+const FormSendMailForOrder = ({ isLoading, onSave }: TProps) => {
   const form = useForm<TMailFormData>({
     resolver: zodResolver(mailFormSchema),
   });
@@ -96,9 +96,7 @@ const FormSendMailForOrder = ({  isLoading, onSave }: TProps) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="orderConfigration">
-                      Order Configuration
-                    </SelectItem>
+                    <SelectItem value="orderConfigration">guration</SelectItem>
                     <SelectItem value="shippingNotification">
                       Shipping Notification
                     </SelectItem>

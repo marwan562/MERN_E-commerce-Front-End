@@ -296,7 +296,7 @@ export default function OrderDetails({
       ) : (
         <Card className="max-w-3xl mx-auto">
           <CardHeader>
-            <CardTitle>Order Configuration</CardTitle>
+            <CardTitle>Order Confirmation</CardTitle>
             <CardDescription>
               Send an email about your order details.
             </CardDescription>

@@ -83,7 +83,7 @@ const NavSearch = () => {
 
   const productsWithWashlist = products.map((product) => ({
     ...product,
-    inWashlist: washlist.some((item) => item.productId._id === product._id),
+    inWashlist: washlist.some((item) => item.productId?._id === product?._id),
   }));
 
   const showProducts = viewMoreProducts

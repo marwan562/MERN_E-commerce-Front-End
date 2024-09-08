@@ -5,6 +5,10 @@ import { actFindMyMailByOrderId } from "./act/actFindMyMailByOrderId";
 import { actGetAllMyMails, TMailPagination } from "./act/actGetAllMyMails";
 import { object } from "zod";
 import { actRemoveMyMail } from "./act/actRemoveMyMail";
+import { actGetAllMails } from "./actForAdmin/actGetAllMails";
+import { actReplyMailToUser } from "./actForAdmin/actReplyMailToUser";
+import { findMailHandleReply } from "@/utils/findMailHandleReply";
+import { actUpdateIsReadMail } from "./actForAdmin/actUpdateIsReadMail";
 
 interface IState {
   status: "idle" | "pending" | "success" | "failed";
@@ -23,10 +27,9 @@ const initialState: IState = {
     pageSize: 0,
     totalPages: 0,
     totalMails: 0,
-  } ,
+  },
   error: null,
 };
-
 
 const mailsSlice = createSlice({
   name: "mails",
@@ -41,10 +44,10 @@ const mailsSlice = createSlice({
       state.mails = [];
       state.pagination = {
         page: 1,
-        pageSize: 0,
-        totalPages: 0,
+        pageSize: 10,
+        totalPages: 1,
         totalMails: 0,
-      }
+      };
       state.error = null;
     },
   },
@@ -88,24 +91,71 @@ const mailsSlice = createSlice({
         state.status = "failed";
         state.error = action.payload as string;
       });
-      //remove my mail fron server 
-      builder
+    //remove my mail fron server
+    builder
       .addCase(actRemoveMyMail.pending, (state) => {
         state.status = "pending";
       })
       .addCase(actRemoveMyMail.fulfilled, (state, action) => {
         state.status = "success";
-        state.mails = state.mails.filter((mail) => mail._id !== action.payload.mail._id)
-        if ( state.pagination.pageSize >= 1){
-          state.pagination.pageSize = state.pagination.pageSize - 1
+        state.mails = state.mails.filter(
+          (mail) => mail._id !== action.payload.mail._id
+        );
+        if (state.pagination.pageSize >= 1) {
+          state.pagination.pageSize = state.pagination.pageSize - 1;
         }
       })
       .addCase(actRemoveMyMail.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
       });
+
+    // get all mails for admin
+
+    builder
+      .addCase(actGetAllMails.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(actGetAllMails.fulfilled, (state, action) => {
+        state.status = "success";
+        state.mails = action.payload.mails;
+        state.pagination = action.payload.pagination;
+      })
+      .addCase(actGetAllMails.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload as string;
+      });
+
+    //reply mail from admin to user
+    builder.addCase(
+      actReplyMailToUser.fulfilled,
+      (state, action: PayloadAction<{ mail: IMail }>) => {
+        const updatedMail = action.payload.mail;
+
+        const targetMail = state.mails.find(
+          (mail) => mail._id === updatedMail._id
+        );
+
+        if (targetMail) {
+          const lastReply =
+            updatedMail.replies?.[updatedMail.replies.length - 1];
+
+          if (lastReply) {
+            targetMail.replies = [...(targetMail.replies || []), lastReply];
+          }
+        }
+      }
+    );
+
+    // update read mail from admin
+
+    builder.addCase(actUpdateIsReadMail.fulfilled, (state, action) => {
+      state.mails = state.mails.map(
+        (mail) => mail._id === action.payload.mail._id
+       ? {...action.payload.mail} :mail );
+    });
   },
 });
 
-export const { clearMailsAction , setPage } = mailsSlice.actions;
+export const { clearMailsAction, setPage } = mailsSlice.actions;
 export default mailsSlice.reducer;

@@ -41,7 +41,6 @@ const DetailsProductPage = async ({
           <DetailsProduct {...productDetails} />
         </div>
 
-        <CatPefix title="Products Similar Category" similarProduct={productDetails._id} params={{ catPerfix: productDetails.category.title }} />
       </div>
     </div>
   );

@@ -101,7 +101,7 @@ export default function Component() {
     id,
     role,
   }: {
-    id: number;
+    id: string;
     role: TRoles;
   }) => {
     try {
@@ -117,7 +117,7 @@ export default function Component() {
     if (value) {
       refetch();
     }
-  }, []);
+  }, [refetch, value]);
 
   return (
     <Card className="container mx-auto px-4 md:px-6 py-8 flex flex-col gap-8">

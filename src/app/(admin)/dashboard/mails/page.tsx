@@ -116,7 +116,9 @@ export default function AdminMailPage() {
 
   const handleMailOpen = (mail: IMail) => {
     setSelectedMail(mail);
-      dispatch(actUpdateIsReadMail({ mailId: mail._id as string, token }));
+    dispatch(
+      actUpdateIsReadMail({ mailId: mail._id as string, token, user: true })
+    );
   };
 
   return (
@@ -180,7 +182,7 @@ export default function AdminMailPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {loading &&  <SkeletonRowsOrders />}
+              {loading && <SkeletonRowsOrders />}
               {mails.map((mail) => (
                 <TableRow key={mail._id}>
                   <TableCell>
@@ -340,13 +342,12 @@ export default function AdminMailPage() {
                                             {reply.content}
                                           </p>
                                           <p className="text-xs text-gray-500 mt-2 flex felx-row gap-1 items-center">
-                                          {reply.user.role === "admin" && (
-                                                reply.isRead ? (
-                                                  <CheckCheck className="size-4 text-green-500" />
-                                                ) : (
-                                                  <Check className="size-4" />
-                                                )
-                                              )}
+                                            {reply.user.role === "admin" &&
+                                              (reply.isRead ? (
+                                                <CheckCheck className="size-4 text-green-500" />
+                                              ) : (
+                                                <Check className="size-4" />
+                                              ))}
                                             {format(
                                               new Date(reply.timestamp),
                                               "p"

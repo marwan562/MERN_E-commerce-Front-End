@@ -1,7 +1,7 @@
 "use client";
 
 type TProps = {
-  inWashlist: boolean;
+  inWashlist: boolean | undefined;
   handleAddToWashlist: () => void;
   loading: boolean;
 };

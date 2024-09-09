@@ -1,9 +1,20 @@
 // components/CategoryCard.js
 import Image from "next/image";
 
-const CategoryCard = ({ title, image, altText, isHiddenOnMobile }) => {
+type TProps = {
+  title: string;
+  image: string;
+  altText: string;
+  isHiddenOnMobile: boolean;
+};
+
+const CategoryCard = ({ title, image, altText, isHiddenOnMobile }: TProps) => {
   return (
-    <div className={`relative group flex justify-center items-center h-full w-full ${isHiddenOnMobile ? 'hidden md:block' : ''} hover:scale-105 duration-300 cursor-pointer`}>
+    <div
+      className={`relative group flex justify-center items-center h-full w-full ${
+        isHiddenOnMobile ? "hidden md:block" : ""
+      } hover:scale-105 duration-300 cursor-pointer`}
+    >
       <Image
         width={500}
         height={500}

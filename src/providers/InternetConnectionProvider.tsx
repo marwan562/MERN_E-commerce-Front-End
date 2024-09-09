@@ -18,7 +18,7 @@ const InternetConnecationProvider = ({ children }: { children: ReactNode }) => {
       title: (
         <div className="flex items-center">
           <WifiOff className="mr-2" />
-          <span className="first-letter:capitalize">You'r Offline.</span>
+          <span className="first-letter:capitalize">You&apos;re Offline.</span>
         </div>
       ),
       description: "Please make sure you'r internet connection.",
@@ -32,7 +32,7 @@ const InternetConnecationProvider = ({ children }: { children: ReactNode }) => {
       title: (
         <div className="flex items-center">
           <Wifi className="mr-2" />
-          <span className="first-letter:capitalize">You'r Online.</span>
+          <span className="first-letter:capitalize">You&apos;re Online.</span>
         </div>
       ),
       description: "Please evry time check internet connection.",

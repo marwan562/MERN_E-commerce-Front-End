@@ -23,7 +23,7 @@ export interface ICategoriesTypes {
   img: string;
 }
 export interface IBlogsTypes {
-  _id: number;
+  _id: string;
   title: string;
   img: string;
   createdAt: string;
@@ -32,7 +32,7 @@ export interface IBlogsTypes {
 
 export interface User {
   authId: string;
-  _id: number;
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -54,13 +54,13 @@ export interface TCartItems {
 }
 
 export interface TWashlist {
-  _id: number;
-  userId: number;
+  _id: string;
+  userId: string;
   productId: IProductsTypes;
 }
 
 export type TCreateOrder = {
-  userId?: number;
+  userId?: string;
   cartItems: CartItem[];
   deliveryDetails: DeliveryDetails;
 };
@@ -84,11 +84,11 @@ export type TStatusOrder =
   | "Delivered"
   | "Cancelled";
 export interface CartItem {
-  productId: number;
+  productId: string;
   quantity: number;
   img: string;
   title: string;
-  _id?: string;
+  _id?:string;
 }
 
 export interface DeliveryDetails {
@@ -158,7 +158,7 @@ export type TReplies = {
 };
 
 export interface IMail {
-  _id?: string;
+  _id?:string;
   orderId: string;
   userId: User | string;
   adminId: string;

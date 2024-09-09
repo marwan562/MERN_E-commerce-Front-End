@@ -44,8 +44,8 @@ export const orderApi = createApi({
         body: { status },
       }),
       invalidatesTags: (result, error, { orderId }) => [
-        { type: "ordersAdmin", id: "LIST" }, // Invalidate list cache to refresh all orders
-        { type: "ordersAdmin", id: orderId }, // Invalidate specific order cache
+        { type: "ordersAdmin", id: "LIST" }, 
+        { type: "ordersAdmin", id: orderId }, 
       ],
     }),
 
@@ -82,14 +82,14 @@ export const orderApi = createApi({
         body: JSON.stringify(order),
         mode: "cors",
       }),
-      invalidatesTags: [{ type: "ordersAdmin", id: "LIST" }], // Invalidate list cache to include the new order
+      invalidatesTags: [{ type: "ordersAdmin", id: "LIST" }], 
     }),
 
     // Query to get all orders for a user
     getMyOrders: builder.query<
       TResMyOrder,
       {
-        id: number | undefined;
+        id: string | undefined;
         token: string | null;
         page: number;
         status?: TStatusOrder | "";

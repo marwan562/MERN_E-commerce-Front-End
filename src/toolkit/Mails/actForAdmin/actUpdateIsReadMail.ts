@@ -4,16 +4,20 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 type TProps = {
   token: string | null;
+  user: boolean;
   mailId: string;
 };
 
 export const actUpdateIsReadMail = createAsyncThunk(
   "mails/actUpdateIsReadMail",
-  async ({ token, mailId }: TProps, thunkApi) => {
+  async ({ token, mailId, user }: TProps, thunkApi) => {
     const { rejectWithValue, getState } = thunkApi;
-    const { auth } = getState() as unknown as RootState;
+    let userId;
 
-    const userId = auth.user?._id;
+    if (user) {
+      const { auth } = getState() as unknown as RootState;
+      userId = auth.user?._id;
+    }
 
     try {
       const res = await fetch(

@@ -3,7 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "sonner";
 
 type TProps = {
-  productId: number;
+  productId: string;
   token: string | null;
 };
 

@@ -12,7 +12,7 @@ import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
 interface TProps extends IProductsTypes {
-  inWashlist: boolean;
+  inWashlist?: boolean;
 }
 
 const ProductList = ({

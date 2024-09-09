@@ -102,7 +102,7 @@ export default function Component() {
 
   const handleMailOpen = (mail: IMail) => {
     setSelectedMail(mail)
-      dispatch(actUpdateIsReadMail({ mailId: mail._id as string, token }))
+      dispatch(actUpdateIsReadMail({ mailId: mail._id as string, token, user:false}))
   }
 
   const handleReply = async () => {

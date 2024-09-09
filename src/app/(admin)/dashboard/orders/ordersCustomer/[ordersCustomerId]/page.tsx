@@ -26,7 +26,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export default function PageOrdersCustomer({
   params,
 }: {
-  params: { ordersCustomerId: number | undefined };
+  params: { ordersCustomerId: string | undefined };
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState({ key: "id", order: "asc" });

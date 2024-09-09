@@ -76,7 +76,7 @@ export default function ProductStatCharts({
   ];
 
   const filteredDailyData = productStat.dailyData.filter((data) => {
-    const dataMonth = new Date(data.date).toLocaleString("default", {
+    const dataMonth = new Date(data.date as Date ).toLocaleString("default", {
       month: "short",
     });
     return dataMonth === selectedMonth;
@@ -179,7 +179,7 @@ export default function ProductStatCharts({
                 </SelectTrigger>
                 <SelectContent>
                   {productStat.monthlyData.map((data) => (
-                    <SelectItem key={data.month} value={data?.month}>
+                    <SelectItem key={data.month} value={data?.month as string}>
                       {data.month}
                     </SelectItem>
                   ))}

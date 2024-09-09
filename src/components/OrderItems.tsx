@@ -12,7 +12,7 @@ const OrderItems = ({ _id, img, title, price, quantity }: IProductsTypes) => {
   const dispatch = useAppDispatch();
   const { getToken } = useAuth();
   const [isRemove, setIsRemove] = useState(false);
-  const handleRmoveItem = async (productId: number) => {
+  const handleRmoveItem = async (productId: string) => {
     setIsRemove(true);
     const token = await getToken();
 

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 type TProps = {
   token: string | null;
-  productId: number; // Update to string if API expects productId as a string
+  productId: string; 
 };
 
 export const actAddWashlist = createAsyncThunk(

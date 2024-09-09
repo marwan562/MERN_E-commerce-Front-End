@@ -170,7 +170,7 @@ const FormCustomer = ({
             <Image
               width={200}
               height={200}
-              src={form?.watch("img")}
+              src={form?.watch("img") as string}
               alt="Image"
               className="rounded-md object-cover"
             />

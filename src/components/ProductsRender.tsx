@@ -6,7 +6,7 @@ type TProps = {
 };
 
 const ProductsRender = ({ data }: TProps) => {
-  return data.map((el) => <ProductList key={el.id} {...el} />);
+  return data.map((el) => <ProductList key={el._id} {...el} />);
 };
 
 export default ProductsRender;

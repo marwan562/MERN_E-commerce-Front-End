@@ -25,10 +25,10 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Component() {
   const token = useAuthToken();
-  const { data, refetch } = useGetAllCategoriesQuery(
-    {},
-    { skip: false, refetchOnFocus: true }
-  );
+  const { data, refetch } = useGetAllCategoriesQuery(undefined, {
+    skip: false,
+    refetchOnFocus: true,
+  });
   const [createCategory, { isLoading: isCreating }] =
     useCreateCategoryMutation();
   const [updateCategory, { isLoading: isUpdating }] =

@@ -51,7 +51,7 @@ const TableListMyMails = ({
 }: TProps) => {
   const [isLoading , setIsLoading] = useState(false)
 
-  const removeMyMail = async (mailId:string) => {
+  const removeMyMail = async (mailId:string | undefined) => {
     try {
       setIsLoading(true)
       removeMyMialHanlder(mailId)
@@ -127,7 +127,7 @@ const TableListMyMails = ({
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
-                onClick={() => removeMyMail(mail._id)}
+                onClick={() => removeMyMail(mail?._id)}
                 >
                   Delete
                 </AlertDialogAction>

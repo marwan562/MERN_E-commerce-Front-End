@@ -2,13 +2,12 @@
 import ProductList from "@/components/ProductsList";
 import { IProductsTypes } from "@/interface";
 import { useAppSelector } from "@/lib/store";
-import { title } from "process";
 import React, { useEffect, useState } from "react";
 
 const getProductByCatPrefix = async (
-  catPerfix: string
+  catPrefix: string
 ): Promise<IProductsTypes[]> => {
-  const res = await fetch(`${process.env.BASE_URL}/category/${catPerfix}`, {
+  const res = await fetch(`${process.env.BASE_URL}/category/${catPrefix}`, {
     method: "GET",
   });
 
@@ -19,14 +18,16 @@ const getProductByCatPrefix = async (
   return await res.json();
 };
 
-const CatPefix = ({
+interface CatPrefixProps {
+  params: { catPrefix: string };
+  title?: string;
+  similarProduct?: string;
+}
+
+const CatPrefix: React.FC<CatPrefixProps> = ({
   params,
   title,
   similarProduct,
-}: {
-  params: { catPerfix: string };
-  title?: string;
-  similarProduct?: string;
 }) => {
   const [products, setProducts] = useState<IProductsTypes[]>([]);
   const { washlist } = useAppSelector((state) => state.washlist);
@@ -37,13 +38,13 @@ const CatPefix = ({
   }));
 
   useEffect(() => {
-    getProductByCatPrefix(params.catPerfix).then((data) => setProducts(data));
-  }, [params.catPerfix]);
+    getProductByCatPrefix(params.catPrefix).then((data) => setProducts(data));
+  }, [params.catPrefix]);
 
   return (
     <main className="mb-36 container mx-auto mt-24">
       <h2 className="text-3xl border-b-2 border-black font-mono">
-        {title ? title : `${params?.catPerfix?.toUpperCase()}&apos;s Products`}
+        {title ? title : `${params.catPrefix.toUpperCase()}'s Products`}
       </h2>
       <br />
       <div className="grid grid-cols-1 m-3 gap-2 sm:gap-0 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
@@ -57,4 +58,4 @@ const CatPefix = ({
   );
 };
 
-export default CatPefix;
+export default CatPrefix;

@@ -1,8 +1,9 @@
 import React from "react";
-import NextBreadcrumb from "@/components/NextBreadcrumb"; 
+import NextBreadcrumb from "@/components/NextBreadcrumb";
 import DetailsProduct from "@/components/DetailsProduct";
 import LeftBaner from "@/components/LeftBaner";
-import { IProductsTypes } from "@/interface";
+import { ICategoriesTypes, IProductsTypes } from "@/interface";
+import CatPefix from "../../categories/[catPerfix]/page";
 
 const getProductById = async (id: string): Promise<IProductsTypes> => {
   const res = await fetch(`${process.env.BASE_URL}/product/details/${id}`, {
@@ -39,6 +40,8 @@ const DetailsProductPage = async ({
           <LeftBaner image={productDetails.img} />
           <DetailsProduct {...productDetails} />
         </div>
+
+        <CatPefix title="Products Similar Category" similarProduct={productDetails._id} params={{ catPerfix: productDetails.category.title }} />
       </div>
     </div>
   );

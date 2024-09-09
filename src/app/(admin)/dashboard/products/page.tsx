@@ -99,22 +99,24 @@ export default function Component() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Product Management</h1>
-      <FilterProducts
-        role={role}
-        search={search}
-        category={category}
-        categories={categories}
-        isCreating={isCreating}
-        handleCreateProduct={handleCreateProduct}
-        handleCategoryChange={handleCategoryChange}
-        handleRoleChange={handleRoleChange}
-        handleSearchChange={handleSearchChange}
-      />
       <Card>
         <CardHeader>
-          <CardTitle>Products List</CardTitle>
-          <CardDescription>Manage your products here</CardDescription>
+          <h1 className="text-2xl font-bold mb-4">
+            Product Management
+            <CardDescription>Manage your products here</CardDescription>
+          </h1>
+
+          <FilterProducts
+            role={role}
+            search={search}
+            category={category}
+            categories={categories}
+            isCreating={isCreating}
+            handleCreateProduct={handleCreateProduct}
+            handleCategoryChange={handleCategoryChange}
+            handleRoleChange={handleRoleChange}
+            handleSearchChange={handleSearchChange}
+          />
         </CardHeader>
         <CardContent>
           <ProductsTable

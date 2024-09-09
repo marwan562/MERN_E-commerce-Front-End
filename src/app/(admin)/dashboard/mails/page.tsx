@@ -51,6 +51,8 @@ import { IMail, User } from "@/interface";
 import { useDebounce } from "use-debounce";
 import Link from "next/link";
 import { actUpdateIsReadMail } from "@/toolkit/Mails/actForAdmin/actUpdateIsReadMail";
+import ProductsSkeletons from "@/components/skeletons/ProductsSkeletons";
+import SkeletonRowsOrders from "../../components/feedback/SkeletonRowsOrders";
 
 export default function AdminMailPage() {
   const token = useAuthToken();
@@ -59,7 +61,7 @@ export default function AdminMailPage() {
     mails,
     pagination: { page, totalMails, totalPages },
   } = useAppSelector((state) => state.mails);
-
+  const [loading, setLoading] = useState(false);
   const [selectedMail, setSelectedMail] = useState<IMail | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -69,6 +71,7 @@ export default function AdminMailPage() {
   const [search] = useDebounce(searchTerm, 500);
 
   useEffect(() => {
+    setLoading(true);
     if (token) {
       dispatch(
         actGetAllMails({
@@ -80,6 +83,7 @@ export default function AdminMailPage() {
         })
       );
     }
+    setLoading(false);
     return () => {
       dispatch(clearMailsAction());
     };
@@ -112,9 +116,7 @@ export default function AdminMailPage() {
 
   const handleMailOpen = (mail: IMail) => {
     setSelectedMail(mail);
-    if (mail.status === "unread") {
       dispatch(actUpdateIsReadMail({ mailId: mail._id as string, token }));
-    }
   };
 
   return (
@@ -178,6 +180,7 @@ export default function AdminMailPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {loading &&  <SkeletonRowsOrders />}
               {mails.map((mail) => (
                 <TableRow key={mail._id}>
                   <TableCell>
@@ -337,11 +340,13 @@ export default function AdminMailPage() {
                                             {reply.content}
                                           </p>
                                           <p className="text-xs text-gray-500 mt-2 flex felx-row gap-1 items-center">
-                                            {reply.isRead ? (
-                                              <CheckCheck className="size-4 text-green-500 " />
-                                            ) : (
-                                              <Check className="size-4 " />
-                                            )}
+                                          {reply.user.role === "admin" && (
+                                                reply.isRead ? (
+                                                  <CheckCheck className="size-4 text-green-500" />
+                                                ) : (
+                                                  <Check className="size-4" />
+                                                )
+                                              )}
                                             {format(
                                               new Date(reply.timestamp),
                                               "p"

@@ -9,6 +9,7 @@ import { actGetAllMails } from "./actForAdmin/actGetAllMails";
 import { actReplyMailToUser } from "./actForAdmin/actReplyMailToUser";
 import { findMailHandleReply } from "@/utils/findMailHandleReply";
 import { actUpdateIsReadMail } from "./actForAdmin/actUpdateIsReadMail";
+import { actGetMyMailsReceived } from "./act/actGetMyMailsReceived";
 
 interface IState {
   status: "idle" | "pending" | "success" | "failed";
@@ -63,6 +64,22 @@ const mailsSlice = createSlice({
         state.pagination = action.payload.pagination;
       })
       .addCase(actGetAllMyMails.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload as string;
+      });
+
+    // get all my mail recived for user
+
+    builder
+      .addCase(actGetMyMailsReceived.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(actGetMyMailsReceived.fulfilled, (state, action) => {
+        state.status = "success";
+        state.mails = action.payload.mails;
+        state.pagination = action.payload.pagination;
+      })
+      .addCase(actGetMyMailsReceived.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
       });
@@ -148,11 +165,10 @@ const mailsSlice = createSlice({
     );
 
     // update read mail from admin
-
     builder.addCase(actUpdateIsReadMail.fulfilled, (state, action) => {
-      state.mails = state.mails.map(
-        (mail) => mail._id === action.payload.mail._id
-       ? {...action.payload.mail} :mail );
+      state.mails = state.mails.map((mail) =>
+        mail._id === action.payload.mail._id ? { ...action.payload.mail } : mail
+      );
     });
   },
 });

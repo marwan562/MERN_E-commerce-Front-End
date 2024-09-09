@@ -125,13 +125,13 @@ const ProductsTable = ({
                     width={200}
                     height={200}
                     src={product.img}
-                    alt={product.title}
+                    alt={product?.title}
                     className="w-10 h-10 object-cover rounded"
                   />
                 </TableCell>
-                <TableCell>{product.title}</TableCell>
-                <TableCell>${product.price.toFixed(2)}</TableCell>
-                <TableCell>{product.category.title}</TableCell>
+                <TableCell>{product?.title}</TableCell>
+                <TableCell>${product.price?.toFixed(2)}</TableCell>
+                <TableCell>{product.category?.title}</TableCell>
                 <TableCell>{product.stock}</TableCell>
                 <TableCell>
                   <span

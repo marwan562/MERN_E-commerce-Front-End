@@ -96,7 +96,7 @@ const FormSendMailForOrder = ({ isLoading, onSave }: TProps) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="orderConfigration">guration</SelectItem>
+                    <SelectItem value="orderConfigration">Order Confirmation</SelectItem>
                     <SelectItem value="shippingNotification">
                       Shipping Notification
                     </SelectItem>

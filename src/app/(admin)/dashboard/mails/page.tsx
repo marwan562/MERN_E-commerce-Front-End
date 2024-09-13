@@ -112,7 +112,6 @@ export default function AdminMailPage() {
         setIsReplying(false);
       }
     }
-  };
 
   const handleMailOpen = (mail: IMail) => {
     setSelectedMail(mail);
@@ -406,4 +405,5 @@ export default function AdminMailPage() {
       </CardContent>
     </Card>
   );
+}
 }
